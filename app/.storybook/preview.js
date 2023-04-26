@@ -4,6 +4,7 @@ import "../styles/styles.scss";
 // Import i18next config.
 import i18n from "./i18next.js";
 
+
 // Generate the options for the Language menu using the locale codes.
 // Teams can override these labels, but this helps ensure that the language
 // is at least exposed in the list.
@@ -18,6 +19,12 @@ export const parameters = {
       date: /Date$/,
     },
   },
+  options: {
+    storySort: {
+      method: "alphabetical",
+    },
+  },
+
   // Configure i18next and locale/dropdown options.
   i18n,
   locale: "en",
