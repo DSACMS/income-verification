@@ -1,20 +1,11 @@
-import {
-  Accordion,
-  Button,
-  Fieldset,
-  FileInput,
-  FormGroup,
-  Label,
-  TextInput,
-} from "@trussworks/react-uswds";
-import type { NextPage } from "next";
+import { Accordion, Button, Fieldset, FileInput, FormGroup, Label, TextInput } from "@trussworks/react-uswds";
 
 
 
 import Layout from "../components/Layout";
 
 
-const Home: NextPage = () => {
+const Home = (props: { onSubmit: () => void }) => {
   return (
     <Layout>
       <div className="margin-y-5">
@@ -30,14 +21,14 @@ const Home: NextPage = () => {
           items={[
             {
               title: "Accepted documents",
-              content: "",
+              content: "Placeholder",
               expanded: false,
               id: "accordion_1",
               headingLevel: "h2",
             },
             {
               title: "Tips for scanning and taking photos",
-              content: "",
+              content: "Placeholder",
               expanded: false,
               id: "accordion_2",
               headingLevel: "h2",
@@ -97,7 +88,7 @@ const Home: NextPage = () => {
             <TextInput id="email" name="email" type="email" defaultValue="" />
           </FormGroup>
 
-          <Button type="submit">Submit documents</Button>
+          <Button type="button" onClick={props.onSubmit}>Submit documents</Button>
         </form>
       </div>
     </Layout>
