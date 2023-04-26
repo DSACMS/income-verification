@@ -13,8 +13,10 @@ const Confirmation: NextPage = () => {
     <Layout>
       <div className="margin-y-5">
         <h1 className="font-heading-2xl">We’re processing your documents.</h1>
+        <strong>Confirmation:</strong> <span className="usa-tag usa-tag--big bg-primary-dark">#8450001171</span>
 
         <p className="usa-intro">You’re almost done. Here is what’s next.</p>
+
 
         <ProcessList>
           <ProcessListItem>
