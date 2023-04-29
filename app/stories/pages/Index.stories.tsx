@@ -1,14 +1,16 @@
 import { linkTo } from "@storybook/addon-links";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
+
+
 import Index from "../../src/pages/index";
 
 export default {
-  title: "1. Upload",
+  title: "UploadPage",
 } as ComponentMeta<typeof Index>;
 
 const Template: ComponentStory<typeof Index> = () => (
-  <Index onSubmit={linkTo("2. Confirmation")} />
+  <Index onSubmit={linkTo("Confirmation Page")} />
 );
 
-export const Initial = Template.bind({});
+export const UploadPage = Template.bind({});

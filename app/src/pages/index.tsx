@@ -1,49 +1,40 @@
-import { Accordion, Button, Fieldset, FileInput, FormGroup, Label, TextInput } from "@trussworks/react-uswds";
-
-
+import {
+  Accordion,
+  Button,
+  Dropdown,
+  Fieldset,
+  FileInput,
+  FormGroup,
+  Label,
+  TextInput,
+} from "@trussworks/react-uswds";
 
 import Layout from "../components/Layout";
-
 
 const Home = (props: { onSubmit: () => void }) => {
   return (
     <Layout>
       <div className="margin-y-5">
-        <h1>Upload documents</h1>
-        <p className="usa-intro measure-5">
-          If you’ve received a notice requesting additional documentation for
-          your <strong>[State/Territory]</strong> unemployment claim, you can
-          upload it here.
+        <h1 className="mobile-lg:font-heading-2xl font-heading-xl">
+          Upload documents
+        </h1>
+        <p className="usa-intro measure-4 mobile-lg:font-body-lg font-body-md">
+          If you received a request for documents for your{" "}
+          <strong>[state/territory]</strong> unemployment claim, you can upload
+          them with this secure site.
         </p>
-
-        <Accordion
-          className="maxw-tablet margin-bottom-4"
-          items={[
-            {
-              title: "Accepted documents",
-              content: "Placeholder",
-              expanded: false,
-              id: "accordion_1",
-              headingLevel: "h2",
-            },
-            {
-              title: "Tips for scanning and taking photos",
-              content: "Placeholder",
-              expanded: false,
-              id: "accordion_2",
-              headingLevel: "h2",
-            },
-          ]}
-        />
 
         <form className="usa-form usa-form--large">
           <FormGroup>
-            <Label htmlFor="file-input-multiple" className="text-bold">
+            <Label
+              htmlFor="file-input-multiple"
+              className="text-bold mobile-lg:font-body-lg"
+            >
               Select one or more files
             </Label>
             <span className="usa-hint" id="file-input-multiple-hint">
-              Files should be in .pdf, .jpg, .png, or .heic format. Files must
-              be less than 10MB each.
+              Files should be in PDF, JPG, PNG, TIFF, or HEIC format. Files must
+              be under 10MB.
             </span>
             <FileInput
               id="file-input-multiple"
@@ -51,22 +42,94 @@ const Home = (props: { onSubmit: () => void }) => {
               aria-describedby="file-input-multiple-hint"
               multiple
             />
+
+            <Accordion
+              className="maxw-tablet margin-y-2"
+              bordered
+              items={[
+                {
+                  title: "Tips for scanning and taking photos",
+                  content: (
+                    <>
+                      <p>
+                        You can upload digital files, scans, or photos of
+                        documents from a phone or tablet. Make sure your
+                        documents are easy to read and include your name or
+                        business name.
+                      </p>
+
+                      <p>
+                        If you have an Apple or Android device, we recommend
+                        scanning documents with built-in apps:
+                      </p>
+
+                      <ul className="usa-list">
+                        <li>
+                          <a
+                            className="usa-link usa-link--external"
+                            target="_blank"
+                            rel="noreferrer"
+                            href="https://support.apple.com/en-us/HT210336"
+                          >
+                            Scan documents with an iPhone or iPad
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            className="usa-link usa-link--external"
+                            target="_blank"
+                            rel="noreferrer"
+                            href="https://support.google.com/drive/answer/3145835?hl=en&co=GENIE.Platform%3DAndroid"
+                          >
+                            Scan documents with Google Drive
+                          </a>
+                        </li>
+                      </ul>
+                      <p>
+                        Use a solid, dark background when scanning or taking
+                        photos. Do not use a flash or alter the images in any
+                        way.
+                      </p>
+                    </>
+                  ),
+                  expanded: false,
+                  id: "accordion_2",
+                  headingLevel: "h2",
+                },
+              ]}
+            />
           </FormGroup>
 
           <FormGroup className="margin-top-4">
             <Fieldset>
-              <legend className="usa-legend text-bold">
-                Help us match your documents to your application
+              <legend className="usa-legend text-bold mobile-lg:font-body-lg">
+                Help us match your documents to your&nbsp;application
               </legend>
 
-              <Label className="margin-top-1" htmlFor="name">
-                Full name
+              <Label className="margin-top-1" htmlFor="first_name">
+                First name
               </Label>
-              <div className="usa-hint">Legally as it appears on your ID.</div>
-              <TextInput id="name" name="name" type="text" defaultValue="" />
+              <div className="usa-hint">As it appears on your ID</div>
+              <TextInput
+                id="first_name"
+                name="first_name"
+                type="text"
+                defaultValue=""
+              />
+
+              <Label className="margin-top-1" htmlFor="last_name">
+                Last name
+              </Label>
+              <div className="usa-hint">As it appears on your ID</div>
+              <TextInput
+                id="last_name"
+                name="last_name"
+                type="text"
+                defaultValue=""
+              />
 
               <Label htmlFor="name">Social Security Number</Label>
-              <div className="usa-hint">For example, 123 45 6789.</div>
+              <div className="usa-hint">For example, 123 45 6789</div>
               <TextInput
                 id="ssn"
                 name="ssn"
@@ -82,13 +145,26 @@ const Home = (props: { onSubmit: () => void }) => {
 
             <Label htmlFor="email">Email address</Label>
             <div className="usa-hint">
-              You will receive an email to this address when your documents have
-              been successfully processed.
+              You’ll receive an email when your documents have been processed
             </div>
             <TextInput id="email" name="email" type="email" defaultValue="" />
           </FormGroup>
 
-          <Button type="button" onClick={props.onSubmit}>Submit documents</Button>
+          <FormGroup>
+            <Label htmlFor="email">Type of documents</Label>
+            <Dropdown id="doc_type" name="doc_type">
+              <option>Select document type</option>
+              <option value="id">Identity verification</option>
+              <option value="income">Proof of income</option>
+              <option value="employment">Proof of employment</option>
+              <option value="appeal">Appeal documents</option>
+              <option value="other">Other</option>
+            </Dropdown>
+          </FormGroup>
+
+          <Button type="button" onClick={props.onSubmit}>
+            Submit documents
+          </Button>
         </form>
       </div>
     </Layout>

@@ -1,10 +1,14 @@
 import { addons } from "@storybook/addons";
 
+
+/**
+ * @type {import("@storybook/addons").Config}
+ */
 addons.setConfig({
   isFullscreen: false,
   showNav: true,
   showPanel: false,
-  enableShortcuts: true,
+  enableShortcuts: false,
   showToolbar: true,
   theme: undefined,
   selectedPanel: undefined,
@@ -12,10 +16,11 @@ addons.setConfig({
     showRoots: false,
   },
   toolbar: {
-    title: { hidden: false },
-    zoom: { hidden: false },
+    title: { hidden: true },
+    zoom: { hidden: true },
     eject: { hidden: false },
     copy: { hidden: false },
-    fullscreen: { hidden: false },
+    fullscreen: { hidden: true },
+    theme: { hidden: true },
   },
 });
