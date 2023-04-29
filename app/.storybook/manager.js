@@ -1,5 +1,5 @@
 import { addons } from "@storybook/addons";
-
+import { create } from "@storybook/theming";
 
 /**
  * @type {import("@storybook/addons").Config}
@@ -10,7 +10,10 @@ addons.setConfig({
   showPanel: false,
   enableShortcuts: false,
   showToolbar: true,
-  theme: undefined,
+  theme: create({
+    base: "light",
+    brandTitle: "Preview",
+  }),
   selectedPanel: undefined,
   sidebar: {
     showRoots: false,
