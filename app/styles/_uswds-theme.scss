@@ -15,7 +15,6 @@ in the form $setting: value,
   // Same paths are successfully used for both Next.js and Storybook.
   $theme-font-path: add-base-path("/uswds/fonts"),
   $theme-image-path: add-base-path("/uswds/img"),
-
-  $theme-font-type-sans: 'public-sans',
-  $theme-font-role-heading: 'sans'
+  $theme-font-type-sans: "public-sans",
+  $theme-font-role-heading: "sans"
 );

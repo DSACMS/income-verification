@@ -8,10 +8,21 @@ import {
   Label,
   TextInput,
 } from "@trussworks/react-uswds";
+import { useEffect } from "react";
 
 import Layout from "../components/Layout";
 
 const Home = (props: { onSubmit: () => void }) => {
+  // https://github.com/trussworks/react-uswds/issues/2399
+  useEffect(() => {
+    const instructions = document.querySelector(
+      ".usa-file-input__instructions"
+    );
+    if (instructions) {
+      instructions.innerHTML = "Select or drop files here";
+    }
+  }, []);
+
   return (
     <Layout>
       <div className="margin-y-5">
@@ -30,7 +41,7 @@ const Home = (props: { onSubmit: () => void }) => {
               htmlFor="file-input-multiple"
               className="text-bold mobile-lg:font-body-lg"
             >
-              Select one or more files
+              Select files or photos
             </Label>
             <span className="usa-hint" id="file-input-multiple-hint">
               Files should be in PDF, JPG, PNG, TIFF, or HEIC format. Files must
@@ -143,9 +154,20 @@ const Home = (props: { onSubmit: () => void }) => {
               />
             </Fieldset>
 
+            <Label htmlFor="request_number">Request number</Label>
+            <div className="usa-hint">
+              From the notice you received requesting documents
+            </div>
+            <TextInput
+              id="request_number"
+              name="request_number"
+              type="text"
+              defaultValue=""
+            />
+
             <Label htmlFor="email">Email address</Label>
             <div className="usa-hint">
-              You’ll receive an email when your documents have been processed
+              You’ll receive an email when your documents have been scanned
             </div>
             <TextInput id="email" name="email" type="email" defaultValue="" />
           </FormGroup>
