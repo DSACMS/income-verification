@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
-import Index from "../../src/pages/index";
+import Index from "../../src/pages/upload/index";
 
 export default {
   title: "UploadPage",

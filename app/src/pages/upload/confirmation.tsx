@@ -4,8 +4,7 @@ import {
   ProcessListItem,
 } from "@trussworks/react-uswds";
 import type { NextPage } from "next";
-
-import Layout from "../components/Layout";
+import Layout from "src/components/Layout";
 
 const Confirmation: NextPage = () => {
   return (

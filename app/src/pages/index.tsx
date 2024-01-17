@@ -1,196 +1,104 @@
-import {
-  Accordion,
-  Button,
-  Dropdown,
-  Fieldset,
-  FileInput,
-  FormGroup,
-  Label,
-  TextInput,
-} from "@trussworks/react-uswds";
-import { useEffect } from "react";
+import { Button, Tag } from "@trussworks/react-uswds";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import IncomeVerificationStepIndicator from "src/components/IncomeVerificationStepIndicator";
+import Layout from "src/components/Layout";
 
-import Layout from "../components/Layout";
+function Card(props: { children: React.ReactNode; className?: string }) {
+  return (
+    <div
+      className={`border-1px border-base-light radius-md padding-3 measure-6 ${
+        props.className ?? ""
+      }`}
+    >
+      {props.children}
+    </div>
+  );
+}
 
-const Home = (props: { onSubmit: () => void }) => {
-  // https://github.com/trussworks/react-uswds/issues/2399
-  useEffect(() => {
-    const instructions = document.querySelector(
-      ".usa-file-input__instructions"
-    );
-    if (instructions) {
-      instructions.innerHTML = "Select or drop files here";
+const Page = (props: { onTransferClick: () => void }) => {
+  const router = useRouter();
+
+  const handleTransferClick = () => {
+    if (props.onTransferClick) {
+      props.onTransferClick();
+    } else {
+      router.push("/verify-income/transfer").catch(console.error);
     }
-  }, []);
+  };
 
   return (
-    <Layout>
-      <div className="margin-y-5">
+    <Layout hideContact>
+      <div className="margin-top-5 margin-bottom-15">
+        <IncomeVerificationStepIndicator />
         <h1 className="mobile-lg:font-heading-2xl font-heading-xl">
-          Upload documents
+          Verify your income
         </h1>
         <p className="usa-intro measure-4 mobile-lg:font-body-lg font-body-md">
-          If you received a request for documents for your{" "}
-          <strong>[state/territory]</strong> unemployment claim, you can upload
-          them with this secure site.
+          We need to verify your income to ensure you qualify for Disaster
+          Unemployment Assistance and to calculate your weekly benefits.
         </p>
+        <Card className="margin-top-4 bg-accent-cool-lighter border-accent-cool-dark">
+          <h2 className="margin-top-0 margin-bottom-05 font-heading-lg">
+            Transfer your tax information from the IRS
+          </h2>
+          <Tag className="bg-accent-cool-dark">Recommended</Tag>
 
-        <form className="usa-form usa-form--large">
-          <FormGroup>
-            <Label
-              htmlFor="file-input-multiple"
-              className="text-bold mobile-lg:font-body-lg"
-            >
-              Select files or photos
-            </Label>
-            <span className="usa-hint" id="file-input-multiple-hint">
-              Files should be in PDF, JPG, PNG, TIFF, or HEIC format. Files must
-              be under 10MB.
-            </span>
-            <FileInput
-              id="file-input-multiple"
-              name="file-input-multiple"
-              aria-describedby="file-input-multiple-hint"
-              multiple
-            />
+          <p>
+            You can securely transfer information from your most recent federal
+            tax return from the IRS. This takes about <strong>5 minutes</strong>{" "}
+            and is the most accurate way to verify your income.
+          </p>
 
-            <Accordion
-              className="maxw-tablet margin-y-2"
-              bordered
-              items={[
-                {
-                  title: "Tips for scanning and taking photos",
-                  content: (
-                    <>
-                      <p>
-                        You can upload digital files, scans, or photos of
-                        documents from a phone or tablet. Make sure your
-                        documents are easy to read and include your name or
-                        business name.
-                      </p>
+          <p>
+            <strong>You&rsquo;ll need to:</strong>
+          </p>
+          <ul className="usa-list">
+            <li>
+              Consent to sharing information about your business income and
+              expenses
+            </li>
+            <li>Confirm the information from the IRS is correct </li>
+          </ul>
 
-                      <p>
-                        If you have an Apple or Android device, we recommend
-                        scanning documents with built-in apps:
-                      </p>
-
-                      <ul className="usa-list">
-                        <li>
-                          <a
-                            className="usa-link usa-link--external"
-                            target="_blank"
-                            rel="noreferrer"
-                            href="https://support.apple.com/en-us/HT210336"
-                          >
-                            Scan documents with an iPhone or iPad
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            className="usa-link usa-link--external"
-                            target="_blank"
-                            rel="noreferrer"
-                            href="https://support.google.com/drive/answer/3145835?hl=en&co=GENIE.Platform%3DAndroid"
-                          >
-                            Scan documents with Google Drive
-                          </a>
-                        </li>
-                      </ul>
-                      <p>
-                        Use a solid, dark background when scanning or taking
-                        photos. Do not use a flash or alter the images in any
-                        way.
-                      </p>
-                    </>
-                  ),
-                  expanded: false,
-                  id: "accordion_2",
-                  headingLevel: "h2",
-                },
-              ]}
-            />
-          </FormGroup>
-
-          <FormGroup className="margin-top-4">
-            <Fieldset>
-              <legend className="usa-legend text-bold mobile-lg:font-body-lg">
-                Help us match your documents to your&nbsp;application
-              </legend>
-
-              <Label className="margin-top-1" htmlFor="first_name">
-                First name
-              </Label>
-              <div className="usa-hint">As it appears on your ID</div>
-              <TextInput
-                id="first_name"
-                name="first_name"
-                type="text"
-                defaultValue=""
-              />
-
-              <Label className="margin-top-1" htmlFor="last_name">
-                Last name
-              </Label>
-              <div className="usa-hint">As it appears on your ID</div>
-              <TextInput
-                id="last_name"
-                name="last_name"
-                type="text"
-                defaultValue=""
-              />
-
-              <Label htmlFor="name">Social Security Number</Label>
-              <div className="usa-hint">For example, 123 45 6789</div>
-              <TextInput
-                id="ssn"
-                name="ssn"
-                type="text"
-                defaultValue=""
-                inputMode="numeric"
-                placeholder="___ __ ____"
-                pattern="^(?!(000|666|9))\d{3} (?!00)\d{2} (?!0000)\d{4}$"
-                className="usa-masked"
-                inputSize="medium"
-              />
-            </Fieldset>
-
-            <Label htmlFor="request_number">Request number</Label>
-            <div className="usa-hint">
-              From the notice you received requesting documents
-            </div>
-            <TextInput
-              id="request_number"
-              name="request_number"
-              type="text"
-              defaultValue=""
-            />
-
-            <Label htmlFor="email">Email address</Label>
-            <div className="usa-hint">
-              You’ll receive an email when your documents have been scanned
-            </div>
-            <TextInput id="email" name="email" type="email" defaultValue="" />
-          </FormGroup>
-
-          <FormGroup>
-            <Label htmlFor="email">Type of documents</Label>
-            <Dropdown id="doc_type" name="doc_type">
-              <option>Select document type</option>
-              <option value="id">Identity verification</option>
-              <option value="income">Proof of income</option>
-              <option value="employment">Proof of employment</option>
-              <option value="appeal">Appeal documents</option>
-              <option value="other">Other</option>
-            </Dropdown>
-          </FormGroup>
-
-          <Button type="button" onClick={props.onSubmit}>
-            Submit documents
+          <Button type="button" onClick={handleTransferClick}>
+            Transfer tax information
           </Button>
-        </form>
+        </Card>
+
+        <Card className="margin-top-4 bg-base-lightest">
+          <h2 className="margin-top-0 font-heading-md">
+            Upload income documents
+          </h2>
+
+          <p>
+            You can upload copies of your most recent federal tax return with{" "}
+            <strong>Schedule C, F, K-1, or SE attachments</strong>.
+          </p>
+
+          <p>
+            If you don’t have a copy of your tax return, you can{" "}
+            <a
+              href="https://www.irs.gov/individuals/get-transcript"
+              target="_blank"
+            >
+              request a transcript online
+            </a>{" "}
+            or provide documents showing your business income and expenses:
+          </p>
+          <ul className="usa-list">
+            <li>Invoices with your name or company name </li>
+            <li>Bank records, ledgers, or accounting statements </li>
+            <li>Business license (state or federal employer ID numbers) </li>
+            <li>1099-MISC or 1099-K forms</li>
+          </ul>
+          <Link className="usa-button usa-button--outline" href="/upload">
+            Upload documents
+          </Link>
+        </Card>
       </div>
     </Layout>
   );
 };
 
-export default Home;
+export default Page;

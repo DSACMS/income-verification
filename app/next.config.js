@@ -1,5 +1,4 @@
 // @ts-check
-const { i18n } = require("./next-i18next.config");
 const sassOptions = require("./scripts/sassOptions");
 
 /**
@@ -14,8 +13,9 @@ const appSassOptions = sassOptions(basePath);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "export",
+  trailingSlash: true,
   basePath,
-  i18n,
   reactStrictMode: true,
   sassOptions: appSassOptions,
 };

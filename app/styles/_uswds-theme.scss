@@ -16,5 +16,9 @@ in the form $setting: value,
   $theme-font-path: add-base-path("/uswds/fonts"),
   $theme-image-path: add-base-path("/uswds/img"),
   $theme-font-type-sans: "public-sans",
-  $theme-font-role-heading: "sans"
+  $theme-font-role-heading: "sans",
+
+  $theme-global-paragraph-styles: true,
+  $theme-global-link-styles: true,
+  $theme-text-measure: 6
 );

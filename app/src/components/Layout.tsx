@@ -12,13 +12,13 @@ import { ReactElement } from "react";
 
 type Props = {
   children: ReactElement;
+  hideContact?: boolean;
 };
 
-const Layout = ({ children }: Props): ReactElement => (
+const Layout = ({ children, hideContact }: Props): ReactElement => (
   <div>
     <div className="bg-error-dark text-white padding-y-05 text-center font-body-2xs padding-1 margin-bottom-1">
-      This site is for example purposes only. The document uploader can be
-      integrated with an application or on a separate page.
+      This site is for example purposes only
     </div>
 
     <Header basic={true}>
@@ -39,61 +39,62 @@ const Layout = ({ children }: Props): ReactElement => (
         </div>
       </div>
     </Header>
-
     <main className="grid-container">
       <div className="grid-row">
         <div className="grid-col">{children}</div>
       </div>
-      <div className="grid-row">
-        <div className="grid-col border-top-1px padding-y-3 border-base-lighter">
-          <h2 className="font-heading-md margin-bottom-0">Contact us</h2>
-          <p className="margin-top-05 margin-bottom-3">
-            For claim questions or help with this website, please contact:
-          </p>
+      {!hideContact && (
+        <div className="grid-row">
+          <div className="grid-col border-top-1px padding-y-3 border-base-lighter">
+            <h2 className="font-heading-md margin-bottom-0">Contact us</h2>
+            <p className="margin-top-05 margin-bottom-3">
+              For claim questions or help with this website, please contact:
+            </p>
 
-          <IconList>
-            <IconListItem>
-              <IconListIcon className="text-primary-dark">
-                <Icon.AccountBalance />
-              </IconListIcon>
-              <IconListContent>
-                <a
-                  href="https://www.dol.gov/agencies/eta/contacts/ui"
-                  target="_blank"
-                  className="usa-link usa-link--external"
-                >
-                  State Workforce Agency Name
-                </a>
-              </IconListContent>
-            </IconListItem>
+            <IconList>
+              <IconListItem>
+                <IconListIcon className="text-primary-dark">
+                  <Icon.AccountBalance />
+                </IconListIcon>
+                <IconListContent>
+                  <a
+                    href="https://www.dol.gov/agencies/eta/contacts/ui"
+                    target="_blank"
+                    className="usa-link usa-link--external"
+                  >
+                    State Workforce Agency Name
+                  </a>
+                </IconListContent>
+              </IconListItem>
 
-            <IconListItem>
-              <IconListIcon className="text-primary-dark">
-                <Icon.Phone />
-              </IconListIcon>
-              <IconListContent>
-                <a href="tel:1-800-XXX-XXXX" className="usa-link">
-                  1-800-XXX-XXXX
-                </a>
-              </IconListContent>
-            </IconListItem>
+              <IconListItem>
+                <IconListIcon className="text-primary-dark">
+                  <Icon.Phone />
+                </IconListIcon>
+                <IconListContent>
+                  <a href="tel:1-800-XXX-XXXX" className="usa-link">
+                    1-800-XXX-XXXX
+                  </a>
+                </IconListContent>
+              </IconListItem>
 
-            <IconListItem>
-              <IconListIcon className="text-primary-dark">
-                <Icon.MailOutline />
-              </IconListIcon>
-              <IconListContent>
-                <a
-                  href="mailto:workforce-agency@state.gov"
-                  className="usa-link"
-                >
-                  workforce-agency@state.gov
-                </a>
-              </IconListContent>
-            </IconListItem>
-          </IconList>
+              <IconListItem>
+                <IconListIcon className="text-primary-dark">
+                  <Icon.MailOutline />
+                </IconListIcon>
+                <IconListContent>
+                  <a
+                    href="mailto:workforce-agency@state.gov"
+                    className="usa-link"
+                  >
+                    workforce-agency@state.gov
+                  </a>
+                </IconListContent>
+              </IconListItem>
+            </IconList>
+          </div>
         </div>
-      </div>
+      )}
     </main>
   </div>
 );

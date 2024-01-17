@@ -20,10 +20,10 @@
   },
   "dependencies": {
     "@storybook/addon-links": "^6.0.0",
-    "@trussworks/react-uswds": "^4.2.1",
+    "@trussworks/react-uswds": "^5.0.0",
     "@uswds/uswds": "3.1.0",
     "i18next": "^22.4.12",
-    "next": "^13.2.4",
+    "next": "^13.4.7",
     "next-i18next": "^13.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
-import Confirmation from "../../src/pages/confirmation";
+import Confirmation from "../../src/pages/upload/confirmation";
 
 export default {
   title: "Confirmation Page",
