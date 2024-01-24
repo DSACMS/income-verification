@@ -16,7 +16,7 @@ function Card(props: { children: React.ReactNode; className?: string }) {
   );
 }
 
-const Page = (props: { onTransferClick: () => void }) => {
+const Page = (props: { onTransferClick?: () => void }) => {
   const router = useRouter();
 
   const handleTransferClick = () => {
