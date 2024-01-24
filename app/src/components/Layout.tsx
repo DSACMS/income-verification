@@ -54,7 +54,9 @@ const Layout = ({ children, hideContact }: Props): ReactElement => (
             <IconList>
               <IconListItem>
                 <IconListIcon className="text-primary-dark">
-                  <Icon.AccountBalance />
+                  <Icon.AccountBalance
+                    aria-label="Balance Sheet"
+                  />
                 </IconListIcon>
                 <IconListContent>
                   <a
@@ -69,7 +71,7 @@ const Layout = ({ children, hideContact }: Props): ReactElement => (
 
               <IconListItem>
                 <IconListIcon className="text-primary-dark">
-                  <Icon.Phone />
+                  <Icon.Phone aria-label="Phone Icon" />
                 </IconListIcon>
                 <IconListContent>
                   <a href="tel:1-800-XXX-XXXX" className="usa-link">
@@ -80,7 +82,7 @@ const Layout = ({ children, hideContact }: Props): ReactElement => (
 
               <IconListItem>
                 <IconListIcon className="text-primary-dark">
-                  <Icon.MailOutline />
+                  <Icon.MailOutline aria-label="Mailbox" />
                 </IconListIcon>
                 <IconListContent>
                   <a
