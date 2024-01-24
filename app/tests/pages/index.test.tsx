@@ -8,7 +8,7 @@ describe("Index", () => {
   it("should render the heading", () => {
     render(<Index />);
 
-    const heading = screen.getByText(/Welcome/i);
+    const heading = screen.getByText(/Upload documents/i);
 
     expect(heading).toBeInTheDocument();
     expect(heading).toMatchSnapshot();
