@@ -54,9 +54,7 @@ const Layout = ({ children, hideContact }: Props): ReactElement => (
             <IconList>
               <IconListItem>
                 <IconListIcon className="text-primary-dark">
-                  <Icon.AccountBalance
-                    aria-label="Balance Sheet"
-                  />
+                  <Icon.AccountBalance aria-label="Balance Sheet" />
                 </IconListIcon>
                 <IconListContent>
                   <a
