@@ -92,8 +92,8 @@ const Page = (props: { onTransferClick: () => void }) => {
             <li>Business license (state or federal employer ID numbers) </li>
             <li>1099-MISC or 1099-K forms</li>
           </ul>
-          <Link className="usa-button usa-button--outline" href="/upload">
-            Upload documents
+          <Link href="/upload">
+            <a className="usa-button usa-button--outline">Upload documents</a>
           </Link>
         </Card>
       </div>

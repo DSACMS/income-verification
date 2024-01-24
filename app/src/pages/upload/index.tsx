@@ -60,6 +60,7 @@ const Home = (props: { onSubmit?: () => void }) => {
               be under 10MB.
             </span>
             <FileInput
+              crossOrigin={true}
               id="file-input-multiple"
               name="file-input-multiple"
               aria-describedby="file-input-multiple-hint"

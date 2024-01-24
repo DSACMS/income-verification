@@ -13,7 +13,6 @@ const appSassOptions = sassOptions(basePath);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",
   trailingSlash: true,
   basePath,
   reactStrictMode: true,
