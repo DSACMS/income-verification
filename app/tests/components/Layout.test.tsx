@@ -12,7 +12,7 @@ describe("Layout", () => {
       </Layout>
     );
 
-    const header = screen.getByText(/Template Header/i);
+    const header = screen.getByText(/child/i);
 
     expect(header).toBeInTheDocument();
     expect(header).toMatchSnapshot();
