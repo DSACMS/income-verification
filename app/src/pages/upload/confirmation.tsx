@@ -22,9 +22,9 @@ const Confirmation: NextPage = () => {
           <ProcessListItem>
             <ProcessListHeading type="h4">Check your email</ProcessListHeading>
             <p className="margin-top-05">
-              You’ll receive an email when the documents are scanned and sent to
-              your unemployment office. If we’re unable to read the files or an
-              error occurs, you’ll need to upload them again.
+              You’ll receive an email when the documents are scanned and sent.
+              If we’re unable to read the files or an error occurs, you’ll need
+              to upload them again.
             </p>
           </ProcessListItem>
           <ProcessListItem>
@@ -32,8 +32,8 @@ const Confirmation: NextPage = () => {
               Await a decision on your claim
             </ProcessListHeading>
             <p>
-              Your unemployment office will review your documents and provide a
-              response within 5 business days.
+              We will review your documents and provide a response within 5
+              business days.
             </p>
           </ProcessListItem>
         </ProcessList>

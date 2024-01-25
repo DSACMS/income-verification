@@ -1,12 +1,9 @@
 import {
   Accordion,
   Button,
-  Dropdown,
-  Fieldset,
   FileInput,
   FormGroup,
   Label,
-  TextInput,
 } from "@trussworks/react-uswds";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -43,8 +40,8 @@ const Home = (props: { onSubmit?: () => void }) => {
         </h1>
         <p className="usa-intro measure-4 mobile-lg:font-body-lg font-body-md">
           If you received a request for documents for your{" "}
-          <strong>[state/territory]</strong> unemployment claim, you can upload
-          them with this secure site.
+          <strong>[state/territory]</strong> benefits, you can upload them with
+          this secure site.
         </p>
 
         <form className="usa-form usa-form--large" onSubmit={onSubmit}>
@@ -122,79 +119,6 @@ const Home = (props: { onSubmit?: () => void }) => {
                 },
               ]}
             />
-          </FormGroup>
-
-          <FormGroup className="margin-top-4">
-            <Fieldset>
-              <legend className="usa-legend text-bold mobile-lg:font-body-lg">
-                Help us match your documents to your&nbsp;application
-              </legend>
-
-              <Label className="margin-top-1" htmlFor="first_name">
-                First name
-              </Label>
-              <div className="usa-hint">As it appears on your ID</div>
-              <TextInput
-                id="first_name"
-                name="first_name"
-                type="text"
-                defaultValue=""
-              />
-
-              <Label className="margin-top-1" htmlFor="last_name">
-                Last name
-              </Label>
-              <div className="usa-hint">As it appears on your ID</div>
-              <TextInput
-                id="last_name"
-                name="last_name"
-                type="text"
-                defaultValue=""
-              />
-
-              <Label htmlFor="name">Social Security Number</Label>
-              <div className="usa-hint">For example, 123 45 6789</div>
-              <TextInput
-                id="ssn"
-                name="ssn"
-                type="text"
-                defaultValue=""
-                inputMode="numeric"
-                placeholder="___ __ ____"
-                pattern="^(?!(000|666|9))\d{3} (?!00)\d{2} (?!0000)\d{4}$"
-                className="usa-masked"
-                inputSize="medium"
-              />
-            </Fieldset>
-
-            <Label htmlFor="request_number">Request number</Label>
-            <div className="usa-hint">
-              From the notice you received requesting documents
-            </div>
-            <TextInput
-              id="request_number"
-              name="request_number"
-              type="text"
-              defaultValue=""
-            />
-
-            <Label htmlFor="email">Email address</Label>
-            <div className="usa-hint">
-              You’ll receive an email when your documents have been scanned
-            </div>
-            <TextInput id="email" name="email" type="email" defaultValue="" />
-          </FormGroup>
-
-          <FormGroup>
-            <Label htmlFor="email">Type of documents</Label>
-            <Dropdown id="doc_type" name="doc_type">
-              <option>Select document type</option>
-              <option value="id">Identity verification</option>
-              <option value="income">Proof of income</option>
-              <option value="employment">Proof of employment</option>
-              <option value="appeal">Appeal documents</option>
-              <option value="other">Other</option>
-            </Dropdown>
           </FormGroup>
 
           <Button type="submit">Submit documents</Button>
