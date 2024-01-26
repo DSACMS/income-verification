@@ -30,10 +30,10 @@ const Layout = ({ children, hideContact }: Props): ReactElement => (
                 <img
                   className="width-5 desktop:width-10 text-bottom"
                   src="/logo.svg"
-                  alt="Department of Labor, United States of America"
+                  alt="Department of ACME, United States of America"
                 />
               </span>
-              <span className="font-sans-lg flex-fill">USDOL Demo</span>
+              <span className="font-sans-lg flex-fill">ACME Demo</span>
             </div>
           </Title>
         </div>
@@ -62,7 +62,7 @@ const Layout = ({ children, hideContact }: Props): ReactElement => (
                     target="_blank"
                     className="usa-link usa-link--external"
                   >
-                    State Workforce Agency Name
+                    ACME
                   </a>
                 </IconListContent>
               </IconListItem>

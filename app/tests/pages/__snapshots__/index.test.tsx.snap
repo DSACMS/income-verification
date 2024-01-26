@@ -1,10 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Index should render the heading 1`] = `
-<a
-  class="usa-button usa-button--outline"
-  href="/upload"
+<button
+  class="usa-button"
+  data-testid="button"
+  type="button"
 >
   Upload documents
-</a>
+</button>
 `;
