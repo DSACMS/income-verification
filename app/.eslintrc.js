@@ -37,11 +37,14 @@ module.exports = {
         "@typescript-eslint/no-unused-vars": "error",
         // The usage of `any` defeats the purpose of typescript. Consider using `unknown` type instead instead.
         "@typescript-eslint/no-explicit-any": "error",
-        "@typescript-eslint/no-misused-promises": [2, {
-          "checksVoidReturn": {
-            "attributes": false
-          }
-        }]
+        "@typescript-eslint/no-misused-promises": [
+          2,
+          {
+            checksVoidReturn: {
+              attributes: false,
+            },
+          },
+        ],
       },
     },
   ],

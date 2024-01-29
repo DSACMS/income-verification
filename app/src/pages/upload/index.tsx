@@ -6,7 +6,7 @@ import {
   Label,
 } from "@trussworks/react-uswds";
 import { useRouter } from "next/router";
-import { useEffect, SyntheticEvent } from "react";
+import { SyntheticEvent, useEffect } from "react";
 import Layout from "src/components/Layout";
 
 const Home = (props: { onSubmit?: () => void }) => {
@@ -24,7 +24,7 @@ const Home = (props: { onSubmit?: () => void }) => {
 
   const onFileChange = async (/* e: ChangeEvent */) => {
     // check bluriness as part of the preview process?
-  }
+  };
 
   const onSubmit = async (e: SyntheticEvent): Promise<void> => {
     e.preventDefault();
@@ -47,12 +47,12 @@ const Home = (props: { onSubmit?: () => void }) => {
       try {
         await fetch("/api/upload/", {
           method: "POST",
-          body
+          body,
         });
       } catch (e) {
         console.log(e);
       } finally {
-        console.log('finished');
+        console.log("finished");
       }
     }
 
@@ -101,9 +101,8 @@ const Home = (props: { onSubmit?: () => void }) => {
                   <>
                     <p>
                       You can upload digital files, scans, or photos of
-                      documents from a phone or tablet. Make sure your
-                      documents are easy to read and include your name or
-                      business name.
+                      documents from a phone or tablet. Make sure your documents
+                      are easy to read and include your name or business name.
                     </p>
 
                     <p>
@@ -135,8 +134,7 @@ const Home = (props: { onSubmit?: () => void }) => {
                     </ul>
                     <p>
                       Use a solid, dark background when scanning or taking
-                      photos. Do not use a flash or alter the images in any
-                      way.
+                      photos. Do not use a flash or alter the images in any way.
                     </p>
                   </>
                 ),
@@ -148,7 +146,6 @@ const Home = (props: { onSubmit?: () => void }) => {
           />
           <Button type="submit">Submit documents</Button>
         </Form>
-
       </div>
     </Layout>
   );
