@@ -2,9 +2,9 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 export const config = {
   api: {
-      bodyParser: {
-          sizeLimit: '10mb' // Set desired value here
-      }
+    bodyParser: {
+      sizeLimit: '10mb' // Set desired value here
+    }
   }
 }
 
