@@ -1,8 +1,8 @@
+import Busboy from "busboy";
+import fs from "fs";
 import type { NextApiRequest, NextApiResponse } from "next";
-import Busboy from 'busboy';
+import os from "os";
 import path from "path";
-import os from 'os';
-import fs from 'fs';
 import { inspect } from "util";
 
 export const config = {
@@ -20,23 +20,39 @@ async function r(req: NextApiRequest) {
     const busboy = Busboy({ headers: req.headers });
 
     // From example: https://gist.github.com/konojunya/b337a4e048b5dac4f9385b5a0cfd7c62
-    busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-      console.log(
-        'File [' + fieldname + ']: filename: ' + inspect(filename) + ', encoding: ' + encoding + ', mimetype: ' + mimetype,
-      );
-      file.on('data', (data) => {
-        console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
-      });
-      file.on('end', () => {
-        console.log('File [' + fieldname + '] Finished');
-        console.log(`File [${fieldname}] Written to ${saveTo}`);
-      });
+    busboy.on(
+      "file",
+      (
+        fieldname: object,
+        file: string,
+        filename: string,
+        encoding: string,
+        mimetype: string
+      ): void => {
+        console.log(
+          "File [" +
+            fieldname +
+            "]: filename: " +
+            inspect(filename) +
+            ", encoding: " +
+            encoding +
+            ", mimetype: " +
+            mimetype
+        );
+        file.on("data", (data) => {
+          console.log("File [" + fieldname + "] got " + data.length + " bytes");
+        });
+        file.on("end", () => {
+          console.log("File [" + fieldname + "] Finished");
+          console.log(`File [${fieldname}] Written to ${saveTo}`);
+        });
 
-      const saveTo = path.join(os.tmpdir(), filename.filename);
-      file.pipe(fs.createWriteStream(saveTo));
-    });
-    busboy.on('finish', () => {
-      console.log('Done parsing form!');
+        const saveTo = path.join(os.tmpdir(), filename.filename);
+        file.pipe(fs.createWriteStream(saveTo));
+      }
+    );
+    busboy.on("finish", () => {
+      console.log("Done parsing form!");
 
       resolve(1);
     });

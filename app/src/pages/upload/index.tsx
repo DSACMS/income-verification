@@ -22,11 +22,11 @@ const Home = (props: { onSubmit?: () => void }) => {
     }
   }, []);
 
-  const onFileChange = async (/* e: ChangeEvent */) => {
+  const onFileChange = (/* e: ChangeEvent */) => {
     // check bluriness as part of the preview process?
   };
 
-  const onSubmit = async (e: SyntheticEvent): Promise<void> => {
+  const onSubmit = (e: SyntheticEvent): void => {
     e.preventDefault();
 
     if (props.onSubmit) {
@@ -44,16 +44,10 @@ const Home = (props: { onSubmit?: () => void }) => {
       const body = new FormData();
       body.append("file", file);
 
-      try {
-        await fetch("/api/upload/", {
-          method: "POST",
-          body,
-        });
-      } catch (e) {
-        console.log(e);
-      } finally {
-        console.log("finished");
-      }
+      fetch("/api/upload/", {
+        method: "POST",
+        body,
+      }).catch(console.error);
     }
 
     router.push("/upload/confirmation").catch(console.error);
