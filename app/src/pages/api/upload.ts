@@ -4,6 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import os from "os";
 import path from "path";
 import { inspect } from "util";
+import type { Busboy as BusboyClass, FileInfo } from 'busboy';
 
 export const config = {
   api: {
@@ -23,9 +24,9 @@ async function r(req: NextApiRequest) {
     busboy.on(
       "file",
       (
-        fieldname: object,
-        file: string,
-        filename: string,
+        fieldname: string,
+        file: BusboyClass,
+        filename: FileInfo,
         encoding: string,
         mimetype: string
       ): void => {
@@ -39,8 +40,8 @@ async function r(req: NextApiRequest) {
             ", mimetype: " +
             mimetype
         );
-        file.on("data", (data) => {
-          console.log("File [" + fieldname + "] got " + data.length + " bytes");
+        file.on("data", (data: string) => {
+          console.log(`File  ["${fieldname}'] got ${data.length} bytes`);
         });
         file.on("end", () => {
           console.log("File [" + fieldname + "] Finished");
