@@ -18,6 +18,7 @@ class BlurryDetector {
 
     // Convolve the image with the Laplacian kernel
     const laplacianImageData = await sharp(imagePath)
+      .toFormat('jpeg')
       .greyscale()
       .raw()
       .convolve(laplacianKernel)
@@ -37,6 +38,7 @@ class BlurryDetector {
 
   async isImageBlurry(imagePath: string): Promise<boolean> {
     const variance = await this.computeLaplacianVariance(imagePath);
+    console.log(variance);
     return variance < this.threshold;
   }
 }
