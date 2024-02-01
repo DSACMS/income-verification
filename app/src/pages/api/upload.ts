@@ -1,10 +1,8 @@
-import Busboy from "busboy";
+import formidable from "formidable";
 import fs from "fs";
 import type { NextApiRequest, NextApiResponse } from "next";
 import os from "os";
 import path from "path";
-import { inspect } from "util";
-import type { Busboy as BusboyClass, FileInfo } from 'busboy';
 
 export const config = {
   api: {
@@ -16,57 +14,24 @@ type ResponseData = {
   message: string;
 };
 
-async function r(req: NextApiRequest) {
-  return new Promise((resolve) => {
-    const busboy = Busboy({ headers: req.headers });
-
-    // From example: https://gist.github.com/konojunya/b337a4e048b5dac4f9385b5a0cfd7c62
-    busboy.on(
-      "file",
-      (
-        fieldname: string,
-        file: BusboyClass,
-        filename: FileInfo,
-        encoding: string,
-        mimetype: string
-      ): void => {
-        console.log(
-          "File [" +
-            fieldname +
-            "]: filename: " +
-            inspect(filename) +
-            ", encoding: " +
-            encoding +
-            ", mimetype: " +
-            mimetype
-        );
-        file.on("data", (data: string) => {
-          console.log(`File  ["${fieldname}'] got ${data.length} bytes`);
-        });
-        file.on("end", () => {
-          console.log("File [" + fieldname + "] Finished");
-          console.log(`File [${fieldname}] Written to ${saveTo}`);
-        });
-
-        const saveTo = path.join(os.tmpdir(), filename.filename);
-        file.pipe(fs.createWriteStream(saveTo));
-      }
-    );
-    busboy.on("finish", () => {
-      console.log("Done parsing form!");
-
-      resolve(1);
-    });
-    req.pipe(busboy);
-  });
-}
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
   if (req.method === "POST") {
-    await r(req);
+    const form = formidable({});
+    const [, files] = await form.parse(req);
+
+    Object.values(files).forEach((filelist = []) => {
+      const [file] = filelist;
+      if (file) {
+        const saveTo = path.join(os.tmpdir(), file.originalFilename || "");
+        fs.writeFileSync(saveTo, fs.readFileSync(file.filepath));
+        console.log(saveTo);
+      }
+    });
+
+    // todo: handle failure scenario!
     res.status(200).json({ message: "Success!" });
   }
 }

@@ -35,14 +35,17 @@ const Home = (props: { onSubmit?: () => void }) => {
     }
 
     const target = e.target as typeof e.target & {
-      fileInputMultiple: { files: string };
+      fileInputMultiple: { files: FileList };
     };
     const fileInput = target.fileInputMultiple;
 
     if (fileInput) {
-      const [file] = fileInput.files;
+      const { files } = fileInput;
       const body = new FormData();
-      body.append("file", file);
+
+      Object.values(files).forEach((file) => {
+        body.append(file.name, file);
+      });
 
       fetch("/api/upload/", {
         method: "POST",
