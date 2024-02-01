@@ -16,9 +16,7 @@ class BlurryDetector {
       kernel: [0, 1, 0, 1, -4, 1, 0, 1, 0],
     };
 
-    const jpegified = await sharp(imagePath)
-      .toFormat("jpeg")
-      .toBuffer();
+    const jpegified = await sharp(imagePath).toFormat("jpeg").toBuffer();
 
     // Convolve the image with the Laplacian kernel
     const laplacianImageData = await sharp(jpegified)
