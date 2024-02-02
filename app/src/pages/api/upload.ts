@@ -16,6 +16,10 @@ type ResponseData = {
   message: string;
 };
 
+// The threshold is based on a few articles about this approach
+// "The threshold can be set based on performance on the data we have."
+// Further testing is needed to better attune it to doc upload
+// https://www.linkedin.com/pulse/pinpointing-blurry-images-simple-nodejs-way-pablo-schaffner-bofill/
 const slightBlurDetector = new BlurryDetector(300);
 
 export default async function handler(
