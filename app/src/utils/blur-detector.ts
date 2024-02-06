@@ -38,7 +38,7 @@ class BlurryDetector {
   }
 
   async analyse(imagePath: string): Promise<{ isBlurry: boolean, score: number }> {
-    let variance;
+    let variance = -1;
     try {
       variance = await this.computeLaplacianVariance(imagePath);
     } catch (e) {
