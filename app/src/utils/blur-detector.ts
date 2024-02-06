@@ -37,10 +37,18 @@ class BlurryDetector {
     return variance;
   }
 
-  async isImageBlurry(imagePath: string): Promise<boolean> {
-    const variance = await this.computeLaplacianVariance(imagePath);
-    console.log(`Blurriness score: ${variance}`);
-    return variance < this.threshold;
+  async analyse(imagePath: string): Promise<{ isBlurry: boolean, score: number }> {
+    let variance;
+    try {
+      variance = await this.computeLaplacianVariance(imagePath);
+    } catch (e) {
+      console.log(e);
+    }
+
+    return {
+      isBlurry: variance < this.threshold,
+      score: variance,
+    };
   }
 }
 
