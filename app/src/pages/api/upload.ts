@@ -14,7 +14,7 @@ export const config = {
 
 type ResponseData = {
   message: string;
-  results?: unknown
+  results?: unknown;
 };
 
 // The threshold is based on a few articles about this approach
@@ -39,7 +39,11 @@ export default async function handler(
           fs.writeFileSync(saveTo, fs.readFileSync(file.filepath));
           const result = await slightBlurDetector.analyse(saveTo);
 
-          console.log(`File [${saveTo}] is blurry? ${result.isBlurry ? "yes" : "no"} with ${result.score}`);
+          console.log(
+            `File [${saveTo}] is blurry? ${
+              result.isBlurry ? "yes" : "no"
+            } with ${result.score}`
+          );
 
           if (result.isBlurry) {
             // rejects the promise

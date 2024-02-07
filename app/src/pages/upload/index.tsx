@@ -51,14 +51,19 @@ const Home = (props: { onSubmit?: () => void }) => {
         method: "POST",
         body,
       })
-      .then(response => response.json())
-      .then(results => {
-        router.push({
-          pathname: "/upload/confirmation",
-          query: { results: JSON.stringify(results) }
-        }, "/upload/confirmation").catch(console.error);
-      })
-      .catch(console.error);
+        .then((response) => response.json())
+        .then((results) => {
+          router
+            .push(
+              {
+                pathname: "/upload/confirmation",
+                query: { results: JSON.stringify(results) },
+              },
+              "/upload/confirmation"
+            )
+            .catch(console.error);
+        })
+        .catch(console.error);
     }
   };
 
