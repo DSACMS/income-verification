@@ -50,10 +50,21 @@ const Home = (props: { onSubmit?: () => void }) => {
       fetch("/api/upload/", {
         method: "POST",
         body,
-      }).catch(console.error);
+      })
+        .then((response) => response.json())
+        .then((results) => {
+          router
+            .push(
+              {
+                pathname: "/upload/confirmation",
+                query: { results: JSON.stringify(results) },
+              },
+              "/upload/confirmation"
+            )
+            .catch(console.error);
+        })
+        .catch(console.error);
     }
-
-    router.push("/upload/confirmation").catch(console.error);
   };
 
   return (

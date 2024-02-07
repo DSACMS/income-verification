@@ -14,6 +14,7 @@ export const config = {
 
 type ResponseData = {
   message: string;
+  results?: unknown;
 };
 
 // The threshold is based on a few articles about this approach
@@ -30,20 +31,34 @@ export default async function handler(
     const form = formidable({});
     const [, files] = await form.parse(req);
 
-    await Promise.all(
+    const results = await Promise.allSettled(
       Object.values(files).map(async (filelist = []) => {
         const [file] = filelist;
         if (file) {
           const saveTo = path.join(os.tmpdir(), file.originalFilename || "");
           fs.writeFileSync(saveTo, fs.readFileSync(file.filepath));
-          const isBlurry = await slightBlurDetector.isImageBlurry(saveTo);
+          const result = await slightBlurDetector.analyse(saveTo);
 
-          console.log(`File [${saveTo}] is blurry? ${isBlurry ? "yes" : "no"}`);
+          console.log(
+            `File [${saveTo}] is blurry? ${
+              result.isBlurry ? "yes" : "no"
+            } with ${result.score}`
+          );
+
+          if (result.isBlurry) {
+            // rejects the promise
+            throw result;
+          }
+
+          return result;
         }
       })
     );
 
     // todo: handle failure scenario!
-    res.status(200).json({ message: "Success!" });
+    res.status(200).json({
+      message: "Success!",
+      results,
+    });
   }
 }
