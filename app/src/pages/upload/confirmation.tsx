@@ -4,17 +4,9 @@ import {
   ProcessListItem,
 } from "@trussworks/react-uswds";
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
 import Layout from "src/components/Layout";
 
 const Confirmation: NextPage = () => {
-  const { query = "" } = useRouter();
-  if (query.results) {
-    const results = JSON.parse(query.results);
-
-    console.log(results);
-  }
-
   return (
     <Layout>
       <div className="margin-top-5">
