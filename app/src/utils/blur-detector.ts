@@ -21,6 +21,7 @@ class BlurryDetector {
     // Convolve the image with the Laplacian kernel
     const laplacianImageData = await sharp(jpegified)
       .greyscale()
+      .resize({ width: 1000, withoutReduction: true })
       .raw()
       .convolve(laplacianKernel)
       .toBuffer();
