@@ -8,6 +8,8 @@ import {
 import { useRouter } from "next/router";
 import { SyntheticEvent, useEffect } from "react";
 import Layout from "src/components/Layout";
+import BlurryDetector from "src/utils/blur-detector-browser";
+import cv from "@techstark/opencv-js";
 
 const Home = (props: { onSubmit?: () => void }) => {
   const router = useRouter();
@@ -22,7 +24,14 @@ const Home = (props: { onSubmit?: () => void }) => {
     }
   }, []);
 
-  const onFileChange = (/* e: ChangeEvent */) => {
+  const onFileChange = (e) => {
+    const file = e.target.files[0]; 
+    const fr = new FileReader();
+    fr.onload = () => { console.log(fr.result); }
+    const image = fr.readAsDataURL(e.target.files[0]);
+    const imgSrc = URL.createObjectURL(file);
+    const src = cv.imread(imgSrc);
+    console.log(src);
     // check bluriness as part of the preview process?
   };
 

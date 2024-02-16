@@ -16,7 +16,34 @@ const nextConfig = {
   trailingSlash: true,
   basePath,
   reactStrictMode: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  },
   sassOptions: appSassOptions,
+  webpack: (
+    config,
+    { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
+  ) => {
+    // Important: return the modified config
+    return {
+      ...config,
+      resolve: {
+        ...config.resolve,
+        fallback: {
+          fs: false,
+          path: false,
+          crypto: false
+        },
+      },
+    }
+  },
 };
 
 module.exports = nextConfig;

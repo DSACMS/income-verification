@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@storybook/addon-links": "^6.0.0",
+    "@techstark/opencv-js": "^4.9.0-release.2",
     "@trussworks/react-uswds": "^5.0.0",
     "@uswds/uswds": "3.1.0",
     "formidable": "^3.5.1",
