@@ -5,6 +5,7 @@ import os from "os";
 import path from "path";
 
 import BlurryDetector from "../../utils/blur-detector";
+import type { BlurryDetectorReport } from "../../utils/blur-detector";
 
 export const config = {
   api: {
@@ -12,9 +13,15 @@ export const config = {
   },
 };
 
-type ResponseData = {
+type BlurryDetectorResults = Array<{
+  status: "fulfilled" | "rejected";
+  value?: BlurryDetectorReport;
+  reason?: BlurryDetectorReport;
+}>;
+
+export type ResponseData = {
   message: string;
-  results?: unknown;
+  results?: BlurryDetectorResults;
 };
 
 // The threshold is based on a few articles about this approach
@@ -31,7 +38,7 @@ export default async function handler(
     const form = formidable({});
     const [, files] = await form.parse(req);
 
-    const results = await Promise.allSettled(
+    const results: BlurryDetectorResults = await Promise.allSettled(
       Object.values(files).map(async (filelist = []) => {
         const [file] = filelist;
         if (file) {

@@ -1,5 +1,11 @@
 import sharp from "sharp";
 
+export type BlurryDetectorReport = {
+  imagePath: string;
+  isBlurry: boolean;
+  score: number;
+};
+
 // https://github.com/puntorigen/blurry-detector/blob/main/index.js
 class BlurryDetector {
   threshold: number;
@@ -38,9 +44,7 @@ class BlurryDetector {
     return variance;
   }
 
-  async analyse(
-    imagePath: string
-  ): Promise<{ isBlurry: boolean; score: number }> {
+  async analyse(imagePath: string): Promise<BlurryDetectorReport> {
     let variance = -1;
     try {
       variance = await this.computeLaplacianVariance(imagePath);
@@ -49,6 +53,7 @@ class BlurryDetector {
     }
 
     return {
+      imagePath,
       isBlurry: variance < this.threshold,
       score: variance,
     };

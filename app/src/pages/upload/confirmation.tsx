@@ -4,9 +4,20 @@ import {
   ProcessListItem,
 } from "@trussworks/react-uswds";
 import type { NextPage } from "next";
+import { useRouter } from "next/router";
 import Layout from "src/components/Layout";
 
+import type { ResponseData } from "../api/upload";
+
 const Confirmation: NextPage = () => {
+  const router = useRouter();
+  const results = router.query?.results;
+  let parsedResults: ResponseData = { message: "" };
+
+  if (results) {
+    parsedResults = JSON.parse(results.toString() || "") as ResponseData;
+  }
+
   return (
     <Layout>
       <div className="margin-top-5">
@@ -16,8 +27,28 @@ const Confirmation: NextPage = () => {
           #8450001171
         </span>
         <p className="usa-intro measure-5">
-          Thank you for uploading your documents.
+          Thank you for uploading your documents. Here are the results:
         </p>
+        <ul>
+          {parsedResults?.results?.map((result, idx) => (
+            <li key={idx}>
+              {result.value && (
+                <>
+                  {result.value.imagePath}:{" "}
+                  {result.value.isBlurry ? "blurry!" : "sharp"} (
+                  {result.value.score})
+                </>
+              )}
+              {result.reason && (
+                <>
+                  {result.reason.imagePath}:{" "}
+                  {result.reason.isBlurry ? "blurry!" : "sharp"} (
+                  {result.reason.score})
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
         <ProcessList>
           <ProcessListItem>
             <ProcessListHeading type="h4">Check your email</ProcessListHeading>
