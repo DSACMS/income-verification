@@ -21,7 +21,7 @@ const Confirmation: NextPage = () => {
   return (
     <Layout>
       <div className="margin-top-5">
-        <h1 className="font-heading-2xl">We’re scanning your documents.</h1>
+        <h1 className="font-heading-2xl">We've uploaded your documents.</h1>
         <strong>Confirmation:</strong>{" "}
         <span className="usa-tag usa-tag--big bg-primary-dark">
           #8450001171
