@@ -98,7 +98,6 @@ const Home = (props: { onSubmit?: () => void }) => {
             accept="image/*"
             onChange={onFileChange}
             multiple
-            capture
           />
 
           <Accordion
