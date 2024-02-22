@@ -95,8 +95,10 @@ const Home = (props: { onSubmit?: () => void }) => {
             id="fileInputMultiple"
             name="fileInputMultiple"
             aria-describedby="file-input-multiple-hint"
+            accept="image/*"
             onChange={onFileChange}
             multiple
+            capture
           />
 
           <Accordion
