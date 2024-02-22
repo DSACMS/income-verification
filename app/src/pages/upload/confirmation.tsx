@@ -21,7 +21,7 @@ const Confirmation: NextPage = () => {
   return (
     <Layout>
       <div className="margin-top-5">
-        <h1 className="font-heading-2xl">We've uploaded your documents.</h1>
+        <h1 className="font-heading-2xl">We have uploaded your documents.</h1>
         <strong>Confirmation:</strong>{" "}
         <span className="usa-tag usa-tag--big bg-primary-dark">
           #8450001171
@@ -34,14 +34,14 @@ const Confirmation: NextPage = () => {
             <li key={idx}>
               {result.value && (
                 <>
-                  {result.value.imagePath}:{" "}
+                  {result.value.imagePath}:{""}
                   {result.value.isBlurry ? "blurry!" : "sharp"} (
                   {result.value.score})
                 </>
               )}
               {result.reason && (
                 <>
-                  {result.reason.imagePath}:{" "}
+                  {result.reason.imagePath}:{""}
                   {result.reason.isBlurry ? "blurry!" : "sharp"} (
                   {result.reason.score})
                 </>
