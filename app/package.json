@@ -29,7 +29,9 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-i18next": "^12.2.0",
-    "sharp": "0.32.6"
+    "sharp": "0.32.6",
+    "tesseract.js": "^5.0.2"
+
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^6.5.12",
