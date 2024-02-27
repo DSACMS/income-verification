@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Index should render the heading 1`] = `
+<button
+  class="usa-button"
+  data-testid="button"
+  type="button"
+>
+  Upload documents
+</button>
+`;
