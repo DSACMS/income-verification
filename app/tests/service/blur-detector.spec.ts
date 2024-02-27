@@ -11,8 +11,6 @@ import BlurryDetector, {
   BlurryDetectorReport,
 } from "../../src/utils/blur-detector";
 
-// Adjust the import path accordingly
-
 describe("./src/utils/blur-detector.ts", () => {
   let blurryDetector: BlurryDetector;
 

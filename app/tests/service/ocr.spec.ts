@@ -1,5 +1,5 @@
 import { describe, it, vi, expect, afterEach} from "vitest";
-import ocr from 'src/service/ocr';
+import ocr from '@/service/ocr';
 import path from 'path';
 
 const { logger, scanImage } = ocr;

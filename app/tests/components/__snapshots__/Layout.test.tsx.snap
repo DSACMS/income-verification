@@ -1,5 +1,11 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`Layout > should render placeholder header text 1`] = `
+<h1>
+  child
+</h1>
+`;
+
 exports[`Layout should render placeholder header text 1`] = `
 <h1>
   child

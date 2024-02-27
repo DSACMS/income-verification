@@ -19,7 +19,11 @@
     "checkJs": false,
     // Help speed up type checking in larger applications
     "incremental": true,
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@test/*": ["./tests/*"],
+    },
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "__mocks__/styleMock.js"],
   "exclude": ["node_modules"]
