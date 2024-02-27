@@ -26,8 +26,10 @@ const scanImage = async (path: string, opts: OcrOptions) => {
   return output;
 };
 
-export default {
+const ocrService = {
   parsers,
   logger,
   scanImage,
 };
+
+export default ocrService;

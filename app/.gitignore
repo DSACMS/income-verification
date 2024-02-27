@@ -41,3 +41,6 @@ npm-debug.log*
 
 # uswds assets
 /public/uswds
+
+# formatting files
+eng.traineddata
