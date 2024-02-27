@@ -22,8 +22,8 @@
     "types": ["vitest/globals"],
     "paths": {
       "@/*": ["./src/*"],
-      "@test/*": ["./tests/*"],
-    },
+      "@test/*": ["./tests/*"]
+    }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "__mocks__/styleMock.js"],
   "exclude": ["node_modules"]
