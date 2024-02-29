@@ -9,6 +9,10 @@ import Layout from "src/components/Layout";
 
 import type { ResponseData } from "../api/upload";
 
+function formatImagePath(path: string) {
+  return (path.match("([^/]+$)") || [])[0];
+}
+
 function generateBlurryIcon(isBlurry: boolean) {
   return (
     <>
@@ -60,8 +64,8 @@ const Confirmation: NextPage = () => {
                   {generateBlurryIcon(result.value.isBlurry)}
                   <span className="usa-icon-list__content padding-top-2px">
                     {" "}
-                    {result.value.imagePath}
-                    {result.value.isBlurry ? " is blurry" : ""}{" "}
+                    {formatImagePath(result.value.imagePath)}
+                    {result.value.isBlurry ? " is blurry" : ""}
                   </span>
                 </>
               )}
@@ -70,8 +74,8 @@ const Confirmation: NextPage = () => {
                   {generateBlurryIcon(result.reason.isBlurry)}
                   <span className="usa-icon-list__content padding-top-2px">
                     {" "}
-                    {result.reason.imagePath}
-                    {result.reason.isBlurry ? " is blurry" : ""}{" "}
+                    {formatImagePath(result.reason.imagePath)}
+                    {result.reason.isBlurry ? " is blurry" : ""}
                   </span>
                 </>
               )}
