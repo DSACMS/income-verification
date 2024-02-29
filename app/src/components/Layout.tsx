@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import {
+  Alert,
   Header,
   Icon,
   IconList,
@@ -8,6 +9,7 @@ import {
   IconListItem,
   Title,
 } from "@trussworks/react-uswds";
+
 import { ReactElement } from "react";
 
 type Props = {
@@ -17,24 +19,20 @@ type Props = {
 
 const Layout = ({ children, hideContact }: Props): ReactElement => (
   <div>
-    <div className="bg-error-dark text-white padding-y-05 text-center font-body-2xs padding-1 margin-bottom-1">
-      This site is for example purposes only
-    </div>
+    <Alert type={"error"} headingLevel={"h1"} className="usa-alert--emergency usa-alert--no-icon text-center">
+      This website is experimental. Do not upload any personal identifiable information.
+    </Alert>
 
-    <Header basic={true}>
+    <Header className="usa-header usa-header--basic">
       <div className="usa-nav-container">
-        <div className="usa-navbar">
-          <Title className="desktop:margin-top-2">
-            <div className="display-flex flex-align-center">
-              <span className="margin-right-1">
-                <img
-                  className="width-5 desktop:width-10 text-bottom"
-                  src="/logo.svg"
-                  alt="Department of ACME, United States of America"
-                />
-              </span>
-              <span className="font-sans-lg flex-fill">ACME Demo</span>
-            </div>
+        <div className="usa-navbar usa-logo height-8">
+          <img
+            className="width-6"
+            src="/logo.svg"
+            alt="Department of ACME, United States of America"
+          />
+          <Title className="usa-logo__text padding-left-2">
+            ACME Demo
           </Title>
         </div>
       </div>
@@ -46,7 +44,7 @@ const Layout = ({ children, hideContact }: Props): ReactElement => (
       {!hideContact && (
         <div className="grid-row">
           <div className="grid-col border-top-1px padding-y-3 border-base-lighter">
-            <h2 className="font-heading-md margin-bottom-0">Contact us</h2>
+            <h2 className="margin-bottom-0">Contact us</h2>
             <p className="margin-top-05 margin-bottom-3">
               For claim questions or help with this website, please contact:
             </p>
