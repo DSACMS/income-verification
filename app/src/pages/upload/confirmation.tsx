@@ -9,6 +9,16 @@ import Layout from "src/components/Layout";
 
 import type { ResponseData } from "../api/upload";
 
+function generateBlurryIcon(isBlurry: Boolean) {
+  return <>
+      <span className="usa-icon-list__icon">
+      <svg className={ isBlurry ? "usa-icon text-red" : "usa-icon text-green" } aria-hidden="true" focusable="false" role="img" >
+        <use href={`${ isBlurry ? "/uswds/img/sprite.svg#error" : "/uswds/img/sprite.svg#check_circle" }`}></use>
+      </svg>
+    </span>
+  </>
+}
+
 const Confirmation: NextPage = () => {
   const router = useRouter();
   const results = router.query?.results;
@@ -29,21 +39,19 @@ const Confirmation: NextPage = () => {
         <p className="usa-intro measure-5">
           Thank you for uploading your documents. Here are the results:
         </p>
-        <ul>
+        <ul className="padding-left-1">
           {parsedResults?.results?.map((result, idx) => (
-            <li key={idx}>
+            <li key={idx} className="usa-icon-list__item">
               {result.value && (
                 <>
-                  {result.value.imagePath}:{""}
-                  {result.value.isBlurry ? "blurry!" : "sharp"} (
-                  {result.value.score})
+                  {generateBlurryIcon(result.value.isBlurry)}
+                  <span className="usa-icon-list__content padding-top-2px"> {result.value.imagePath}{ result.value.isBlurry ? " is blurry" : ""} </span>
                 </>
               )}
               {result.reason && (
                 <>
-                  {result.reason.imagePath}:{""}
-                  {result.reason.isBlurry ? "blurry!" : "sharp"} (
-                  {result.reason.score})
+                  {generateBlurryIcon(result.reason.isBlurry)}
+                  <span className="usa-icon-list__content padding-top-2px"> {result.reason.imagePath}{ result.reason.isBlurry ? " is blurry" : ""} </span>
                 </>
               )}
             </li>
