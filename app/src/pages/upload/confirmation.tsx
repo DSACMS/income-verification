@@ -9,14 +9,27 @@ import Layout from "src/components/Layout";
 
 import type { ResponseData } from "../api/upload";
 
-function generateBlurryIcon(isBlurry: Boolean) {
-  return <>
+function generateBlurryIcon(isBlurry: boolean) {
+  return (
+    <>
       <span className="usa-icon-list__icon">
-      <svg className={ isBlurry ? "usa-icon text-red" : "usa-icon text-green" } aria-hidden="true" focusable="false" role="img" >
-        <use href={`${ isBlurry ? "/uswds/img/sprite.svg#error" : "/uswds/img/sprite.svg#check_circle" }`}></use>
-      </svg>
-    </span>
-  </>
+        <svg
+          className={isBlurry ? "usa-icon text-red" : "usa-icon text-green"}
+          aria-hidden="true"
+          focusable="false"
+          role="img"
+        >
+          <use
+            href={`${
+              isBlurry
+                ? "/uswds/img/sprite.svg#error"
+                : "/uswds/img/sprite.svg#check_circle"
+            }`}
+          ></use>
+        </svg>
+      </span>
+    </>
+  );
 }
 
 const Confirmation: NextPage = () => {
@@ -45,13 +58,21 @@ const Confirmation: NextPage = () => {
               {result.value && (
                 <>
                   {generateBlurryIcon(result.value.isBlurry)}
-                  <span className="usa-icon-list__content padding-top-2px"> {result.value.imagePath}{ result.value.isBlurry ? " is blurry" : ""} </span>
+                  <span className="usa-icon-list__content padding-top-2px">
+                    {" "}
+                    {result.value.imagePath}
+                    {result.value.isBlurry ? " is blurry" : ""}{" "}
+                  </span>
                 </>
               )}
               {result.reason && (
                 <>
                   {generateBlurryIcon(result.reason.isBlurry)}
-                  <span className="usa-icon-list__content padding-top-2px"> {result.reason.imagePath}{ result.reason.isBlurry ? " is blurry" : ""} </span>
+                  <span className="usa-icon-list__content padding-top-2px">
+                    {" "}
+                    {result.reason.imagePath}
+                    {result.reason.isBlurry ? " is blurry" : ""}{" "}
+                  </span>
                 </>
               )}
             </li>
