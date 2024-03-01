@@ -12,7 +12,7 @@ import Layout from "src/components/Layout";
 
 // TODO: This limit was chosen arbitrarily; once this is no longer a demo,
 // we should choose a limit that is based on actual system restrictions.
-const MAX_FILE_SIZE: number = 300_000; // 10MB = 10,000,000 bytes
+const MAX_FILE_SIZE: number = 5_000_000; // 5MB = 5,000,000 bytes
 
 interface ErrorMessagesState {
   [index: number]: string;
@@ -42,7 +42,7 @@ const Home = (props: { onSubmit?: () => void }) => {
     if (files) {
       Array.from(files).forEach((file, index) => {
         if (file.size > MAX_FILE_SIZE) {
-          errors[index] = file.name + ' is too large (greater than 10mb)';
+          errors[index] = file.name + ' is too large (greater than 5MB)';
           setDisableSubmit(true);
         } else {
           errors[index] = '';
@@ -116,7 +116,7 @@ const Home = (props: { onSubmit?: () => void }) => {
           </Label>
           <span className="usa-hint" id="file-input-multiple-hint">
             Files should be in PDF, JPG, PNG, TIFF, or HEIC format. Files must
-            be under 10MB.
+            be under 5MB.
           </span>
           <FileInput
             crossOrigin="true"
