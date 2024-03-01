@@ -1,14 +1,16 @@
 import { createWorker } from "tesseract.js";
 import { createLogger } from "@/utils/logger";
 import * as parsers from "./parser";
-import { type AdpEarningStatementPatterns } from "./document/adpEarningsStatement";
-import { type W2StatementPatterns } from "./document/w2";
+
+export type DocumentMatcher<P extends Record<string, RegExp>> = {
+  name: string;
+  id: string;
+  patterns: Record<keyof P, RegExp>;
+};
 
 export type OcrOptions = {
   debug: boolean;
 };
-
-export type OCR_Patterns = AdpEarningStatementPatterns | W2StatementPatterns;
 
 // main logger
 export const logger = createLogger("ocr-parser", {

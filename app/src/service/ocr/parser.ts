@@ -1,4 +1,7 @@
-import { OCR_Patterns, logger as ocrLogger } from ".";
+import { type DocumentMatcher } from ".";
+import { type ADPPatterns } from "./document/adpEarningsStatement";
+import { type W2Patterns } from "./document/w2";
+import { logger as ocrLogger } from ".";
 
 export type EmployerData = {
   employerIdentificationNumber: string;
@@ -13,11 +16,13 @@ export type ParsedData = {
   bottomLines: string;
 };
 
-export type ParsingFunction = (text: string, patterns: OCR_Patterns[], logger: typeof ocrLogger) => Partial<ParsedData>;
+export type ParsingPatterns = ADPPatterns | W2Patterns;
 
-export const parseOcrResult: ParsingFunction = (text, patterns, logger): ParsedData => {
+export type ParsingFunction = (documentText: string, patterns: DocumentMatcher<ParsingPatterns>[], logger: typeof ocrLogger) => Partial<ParsedData>;
+
+export const parseOcrResult: ParsingFunction = (documentText, documentMatchers, logger): ParsedData => {
   logger.info("Parsing W2 Data");
-  
+
   const results: Partial<ParsedData> = {
     employer: {} as EmployerData,
     employeeAddress: '',
@@ -25,17 +30,22 @@ export const parseOcrResult: ParsingFunction = (text, patterns, logger): ParsedD
     bottomLines: ''
   };
 
-  for (const [key, pattern] of Object.entries(patterns)) {
-    const match = text.match(pattern);
-    if (match) {
-      if (results.employer && key in results.employer) {
-        results.employer[key as keyof EmployerData] = match[1];
-      } else {
-        results[key as keyof Omit<ParsedData, 'employer'>] = match[1].trim();
+  const patterns = documentMatchers.reduce((acc, matcher) => {
+    for (const [key, pattern] of Object.entries(matcher.patterns)) {
+
+      const match = documentText.match(pattern);
+      if (match) {
+        if (results.employer && key in results.employer) {
+          results.employer[key as keyof EmployerData] = match[1];
+        } else {
+          results[key as keyof Omit<ParsedData, 'employer'>] = match[1].trim();
+        }
       }
+      logger.info(`${key}: ${match ? match[1] : "null"}`);
     }
-    logger.info(`${key}: ${match ? match[1] : "null"}`);
-  }
+
+    return acc;
+  }, {});
 
   return results as ParsedData;
 }

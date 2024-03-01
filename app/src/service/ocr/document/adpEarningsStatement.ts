@@ -1,3 +1,5 @@
+import { DocumentMatcher } from "..";
+
 export const patterns = {
     company: /(H GREG NISSAN DELRAY LLC)/,
     employeeName: /(\bASHLEY STELMAN\b)/,
@@ -11,4 +13,10 @@ export const patterns = {
     netPay: /Net Pay\s*\$([\d,.]+)/,
 };
 
-export type AdpEarningStatementPatterns = Record<keyof typeof patterns, RegExp>;
+export type ADPPatterns = typeof patterns;
+
+export const adpEarningsStatement: DocumentMatcher<typeof patterns> = {
+    name: 'ADP Earnings Statement',
+    id: 'adpEarningsStatement',
+    patterns
+};
