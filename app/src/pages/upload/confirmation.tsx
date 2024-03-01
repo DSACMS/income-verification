@@ -80,13 +80,6 @@ const Confirmation: NextPage = () => {
           </IconList>
         </div>
         <div className="padding-y-3">
-          <h2>Next Steps</h2>
-          <h3>Check your email</h3>
-          <p>
-            You’ll receive an email when the documents are reviewed.
-            If we’re unable to read the files or an error occurs, you’ll need
-            to upload them again.
-          </p>
           <h3>Await a decision on your claim</h3>
           <p>
             We will review your documents and provide a response within 5
