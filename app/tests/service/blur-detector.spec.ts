@@ -1,17 +1,8 @@
-import {
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  jest,
-} from "@jest/globals";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import BlurryDetector, {
   BlurryDetectorReport,
 } from "../../src/utils/blur-detector";
-
-// Adjust the import path accordingly
 
 describe("./src/utils/blur-detector.ts", () => {
   let blurryDetector: BlurryDetector;
@@ -21,12 +12,12 @@ describe("./src/utils/blur-detector.ts", () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("should detect a clear image", async () => {
     // Mock computeLaplacianVariance to return a high variance indicating a clear image
-    blurryDetector.computeLaplacianVariance = jest.fn(() => {
+    blurryDetector.computeLaplacianVariance = vi.fn(() => {
       return Promise.resolve(450);
     });
 
@@ -43,7 +34,7 @@ describe("./src/utils/blur-detector.ts", () => {
 
   it("should detect a blurry image", async () => {
     // Mock computeLaplacianVariance to return a low variance indicating a blurry image
-    blurryDetector.computeLaplacianVariance = jest.fn(() => {
+    blurryDetector.computeLaplacianVariance = vi.fn(() => {
       return Promise.resolve(220);
     });
 
