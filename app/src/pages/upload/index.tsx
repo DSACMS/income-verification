@@ -1,15 +1,26 @@
 import {
   Accordion,
   Button,
+  ErrorMessage,
   FileInput,
   Form,
   Label,
 } from "@trussworks/react-uswds";
 import { useRouter } from "next/router";
-import { SyntheticEvent, useEffect } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import Layout from "src/components/Layout";
 
+// TODO: This limit was chosen arbitrarily; once this is no longer a demo,
+// we should choose a limit that is based on actual system restrictions.
+const MAX_FILE_SIZE: number = 300_000; // 10MB = 10,000,000 bytes
+
+interface ErrorMessagesState {
+  [index: number]: string;
+ }
+
 const Home = (props: { onSubmit?: () => void }) => {
+  const [errorMessages, setErrorMessages] = useState<ErrorMessagesState>({});
+  const [disableSubmit, setDisableSubmit] = useState<boolean>(false);
   const router = useRouter();
 
   // https://github.com/trussworks/react-uswds/issues/2399
@@ -22,8 +33,25 @@ const Home = (props: { onSubmit?: () => void }) => {
     }
   }, []);
 
-  const onFileChange = (/* e: ChangeEvent */) => {
-    // check bluriness as part of the preview process?
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    const errors: ErrorMessagesState = {};
+
+    setDisableSubmit(false);
+
+    if (files) {
+      Array.from(files).forEach((file, index) => {
+        if (file.size > MAX_FILE_SIZE) {
+          errors[index] = file.name + ' is too large (greater than 10mb)';
+          setDisableSubmit(true);
+        } else {
+          errors[index] = '';
+          // Everything's fine!
+        }
+      });
+    }
+
+    setErrorMessages(errors);
   };
 
   const onSubmit = (e: SyntheticEvent): void => {
@@ -153,7 +181,12 @@ const Home = (props: { onSubmit?: () => void }) => {
               },
             ]}
           />
-          <Button type="submit">Submit documents</Button>
+          <ErrorMessage>
+          {Object.keys(errorMessages).map((index) => (
+            <p key={index}>{errorMessages[parseInt(index)]}</p>
+          ))}
+          </ErrorMessage>
+          <Button type="submit" disabled={disableSubmit}>Submit documents</Button>
         </Form>
       </div>
     </Layout>
