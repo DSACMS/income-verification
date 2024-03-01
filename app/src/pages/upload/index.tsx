@@ -16,7 +16,7 @@ const MAX_FILE_SIZE: number = 5_000_000; // 5MB = 5,000,000 bytes
 
 interface ErrorMessagesState {
   [index: number]: string;
- }
+}
 
 const Home = (props: { onSubmit?: () => void }) => {
   const [errorMessages, setErrorMessages] = useState<ErrorMessagesState>({});
@@ -42,10 +42,10 @@ const Home = (props: { onSubmit?: () => void }) => {
     if (files) {
       Array.from(files).forEach((file, index) => {
         if (file.size > MAX_FILE_SIZE) {
-          errors[index] = file.name + ' is too large (greater than 5MB)';
+          errors[index] = file.name + " is too large (greater than 5MB)";
           setDisableSubmit(true);
         } else {
-          errors[index] = '';
+          errors[index] = "";
           // Everything's fine!
         }
       });
@@ -182,11 +182,13 @@ const Home = (props: { onSubmit?: () => void }) => {
             ]}
           />
           <ErrorMessage>
-          {Object.keys(errorMessages).map((index) => (
-            <p key={index}>{errorMessages[parseInt(index)]}</p>
-          ))}
+            {Object.keys(errorMessages).map((index) => (
+              <p key={index}>{errorMessages[parseInt(index)]}</p>
+            ))}
           </ErrorMessage>
-          <Button type="submit" disabled={disableSubmit}>Submit documents</Button>
+          <Button type="submit" disabled={disableSubmit}>
+            Submit documents
+          </Button>
         </Form>
       </div>
     </Layout>
