@@ -5,6 +5,10 @@ import type { NextPage } from "next";
 import type { ResponseData } from "../api/upload";
 import { useRouter } from "next/router";
 
+function formatImagePath(path: string) {
+  return (path.match("([^/]+$)") || [])[0];
+}
+
 function generateBlurryIcon(isBlurry: boolean) {
   return (
     <>
@@ -55,8 +59,9 @@ const Confirmation: NextPage = () => {
                   <>
                     {generateBlurryIcon(result.value.isBlurry)}
                     <IconListContent>
-                      {result.value.imagePath}
-                      {result.value.isBlurry ? " is blurry." : " successfully uploaded."}
+                      {" "}
+                      {formatImagePath(result.value.imagePath)}
+                      {result.value.isBlurry ? " is blurry" : "successfully uploaded."}
                     </IconListContent>
                   </>
                 )}
@@ -64,8 +69,9 @@ const Confirmation: NextPage = () => {
                   <>
                     {generateBlurryIcon(result.reason.isBlurry)}
                     <IconListContent>
-                      {result.reason.imagePath}
-                      {result.reason.isBlurry ? " is blurry." : " successfully uploaded."}
+                      {" "}
+                      {formatImagePath(result.reason.imagePath)}
+                      {result.reason.isBlurry ? " is blurry" : "successfully uploaded"}
                     </IconListContent>
                   </>
                 )}
