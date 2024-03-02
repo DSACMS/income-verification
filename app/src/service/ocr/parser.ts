@@ -18,9 +18,11 @@ export type ParsedData = {
 
 export type ParsingPatterns = ADPPatterns | W2Patterns;
 
-export type ParsingFunction = (documentText: string, patterns: DocumentMatcher<ParsingPatterns>[], logger: typeof ocrLogger) => Partial<ParsedData>;
+export type ParsingFunction = (documentText: string, patterns: DocumentMatcher<ParsingPatterns>[], logger: typeof ocrLogger) => Partial<ParsingPatterns>;
 
-export const parseOcrResult: ParsingFunction = (documentText, documentMatchers, logger): ParsedData => {
+export const parseOcrResult: ParsingFunction = (documentText, documentMatchers, logger): Partial<ParsingPatterns> & {
+  [key: string]: any;
+} => {
   logger.info("Parsing W2 Data");
 
   const results: Partial<ParsedData> = {
@@ -30,22 +32,18 @@ export const parseOcrResult: ParsingFunction = (documentText, documentMatchers, 
     bottomLines: ''
   };
 
-  const patterns = documentMatchers.reduce((acc, matcher) => {
+  const documentMatches = documentMatchers.reduce((acc, matcher) => {
     for (const [key, pattern] of Object.entries(matcher.patterns)) {
 
       const match = documentText.match(pattern);
       if (match) {
-        if (results.employer && key in results.employer) {
-          results.employer[key as keyof EmployerData] = match[1];
-        } else {
-          results[key as keyof Omit<ParsedData, 'employer'>] = match[1].trim();
-        }
+       acc[matcher.id] = { ...acc[matcher.id], [key]: match[1] };
       }
       logger.info(`${key}: ${match ? match[1] : "null"}`);
     }
 
     return acc;
-  }, {});
+  }, {} as Partial<ParsingPatterns> & { [key: string]: any });
 
-  return results as ParsedData;
+  return documentMatches;
 }
