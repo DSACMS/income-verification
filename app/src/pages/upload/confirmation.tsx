@@ -61,7 +61,7 @@ const Confirmation: NextPage = () => {
                     <IconListContent>
                       {" "}
                       {formatImagePath(result.value.imagePath)}
-                      {result.value.isBlurry ? " is blurry" : "successfully uploaded."}
+                      {result.value.isBlurry ? " is blurry" : " successfully uploaded."}
                     </IconListContent>
                   </>
                 )}
@@ -71,7 +71,7 @@ const Confirmation: NextPage = () => {
                     <IconListContent>
                       {" "}
                       {formatImagePath(result.reason.imagePath)}
-                      {result.reason.isBlurry ? " is blurry" : "successfully uploaded"}
+                      {result.reason.isBlurry ? " is blurry" : " successfully uploaded"}
                     </IconListContent>
                   </>
                 )}
