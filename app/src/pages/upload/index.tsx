@@ -1,15 +1,27 @@
 import {
   Accordion,
   Button,
+  ErrorMessage,
   FileInput,
   Form,
   Label,
 } from "@trussworks/react-uswds";
 import { useRouter } from "next/router";
-import { SyntheticEvent, useEffect } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import Layout from "src/components/Layout";
 
+// TODO: This limit was chosen arbitrarily; once this is no longer a demo,
+// we should choose a limit that is based on actual system restrictions.
+const MAX_FILE_SIZE_MB = 0.3; // 5MB = 5,000,000 bytes
+
+const formatter = new Intl.NumberFormat("en", {
+  style: "unit",
+  unit: "megabyte",
+});
+
 const Home = (props: { onSubmit?: () => void }) => {
+  const [errorMessages, setErrorMessages] = useState<string[]>([]);
+  const [disableSubmit, setDisableSubmit] = useState<boolean>(false);
   const router = useRouter();
 
   // https://github.com/trussworks/react-uswds/issues/2399
@@ -22,8 +34,29 @@ const Home = (props: { onSubmit?: () => void }) => {
     }
   }, []);
 
-  const onFileChange = (/* e: ChangeEvent */) => {
-    // check bluriness as part of the preview process?
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    const errors: string[] = [];
+
+    setDisableSubmit(false);
+
+    if (files) {
+      Array.from(files).forEach((file, index) => {
+        if (file.size > MAX_FILE_SIZE_MB * 1_000_000) {
+          errors[index] =
+            file.name +
+            " is too large (greater than " +
+            formatter.format(MAX_FILE_SIZE_MB) +
+            ").";
+          setDisableSubmit(true);
+        } else {
+          errors[index] = "";
+          // Everything's fine!
+        }
+      });
+    }
+
+    setErrorMessages(errors);
   };
 
   const onSubmit = (e: SyntheticEvent): void => {
@@ -88,7 +121,7 @@ const Home = (props: { onSubmit?: () => void }) => {
           </Label>
           <span className="usa-hint" id="file-input-multiple-hint">
             Files should be in PDF, JPG, PNG, TIFF, or HEIC format. Files must
-            be under 10MB.
+            be under {formatter.format(MAX_FILE_SIZE_MB)}.
           </span>
           <FileInput
             crossOrigin="true"
@@ -153,7 +186,14 @@ const Home = (props: { onSubmit?: () => void }) => {
               },
             ]}
           />
-          <Button type="submit">Submit documents</Button>
+          <ErrorMessage>
+            {errorMessages.map(
+              (message, index) => message && <p key={index}>{message}</p>
+            )}
+          </ErrorMessage>
+          <Button type="submit" disabled={disableSubmit}>
+            Submit documents
+          </Button>
         </Form>
       </div>
     </Layout>
