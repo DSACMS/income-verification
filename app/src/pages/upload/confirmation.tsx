@@ -13,7 +13,11 @@ function formatImagePath(path: string) {
   return (path.match("([^/]+$)") || [])[0];
 }
 
-function generateBlurryIcon(isBlurry: boolean) {
+function createBlurrinessIncidatorText(isBlurry: boolean) {
+  return isBlurry ? " is blurry." : " successfully uploaded.";
+}
+
+function createBlurrinessIncidatorIcon(isBlurry: boolean) {
   return (
     <>
       <span className="usa-icon-list__icon">
@@ -62,25 +66,21 @@ const Confirmation: NextPage = () => {
               <IconListItem key={idx} className="usa-icon-list__item">
                 {result.value && (
                   <>
-                    {generateBlurryIcon(result.value.isBlurry)}
+                    {createBlurrinessIncidatorIcon(result.value.isBlurry)}
                     <IconListContent>
                       {" "}
                       {formatImagePath(result.value.imagePath)}
-                      {result.value.isBlurry
-                        ? " is blurry"
-                        : " successfully uploaded."}
+                      {createBlurrinessIncidatorText(result.value.isBlurry)}
                     </IconListContent>
                   </>
                 )}
                 {result.reason && (
                   <>
-                    {generateBlurryIcon(result.reason.isBlurry)}
+                    {createBlurrinessIncidatorIcon(result.reason.isBlurry)}
                     <IconListContent>
                       {" "}
                       {formatImagePath(result.reason.imagePath)}
-                      {result.reason.isBlurry
-                        ? " is blurry"
-                        : " successfully uploaded"}
+                      {createBlurrinessIncidatorText(result.reason.isBlurry)}
                     </IconListContent>
                   </>
                 )}
