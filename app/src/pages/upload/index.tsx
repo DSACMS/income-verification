@@ -12,14 +12,15 @@ import Layout from "src/components/Layout";
 
 // TODO: This limit was chosen arbitrarily; once this is no longer a demo,
 // we should choose a limit that is based on actual system restrictions.
-const MAX_FILE_SIZE = 5_000_000; // 5MB = 5,000,000 bytes
+const MAX_FILE_SIZE_MB = 0.3; // 5MB = 5,000,000 bytes
 
-interface ErrorMessagesState {
-  [index: number]: string;
-}
+const formatter = new Intl.NumberFormat("en", {
+  style: "unit",
+  unit: "megabyte",
+});
 
 const Home = (props: { onSubmit?: () => void }) => {
-  const [errorMessages, setErrorMessages] = useState<ErrorMessagesState>({});
+  const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const [disableSubmit, setDisableSubmit] = useState<boolean>(false);
   const router = useRouter();
 
@@ -35,14 +36,18 @@ const Home = (props: { onSubmit?: () => void }) => {
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    const errors: ErrorMessagesState = {};
+    const errors: string[] = [];
 
     setDisableSubmit(false);
 
     if (files) {
       Array.from(files).forEach((file, index) => {
-        if (file.size > MAX_FILE_SIZE) {
-          errors[index] = file.name + " is too large (greater than 5MB)";
+        if (file.size > MAX_FILE_SIZE_MB * 1_000_000) {
+          errors[index] =
+            file.name +
+            " is too large (greater than " +
+            formatter.format(MAX_FILE_SIZE_MB) +
+            ").";
           setDisableSubmit(true);
         } else {
           errors[index] = "";
@@ -116,7 +121,7 @@ const Home = (props: { onSubmit?: () => void }) => {
           </Label>
           <span className="usa-hint" id="file-input-multiple-hint">
             Files should be in PDF, JPG, PNG, TIFF, or HEIC format. Files must
-            be under 5MB.
+            be under {formatter.format(MAX_FILE_SIZE_MB)}.
           </span>
           <FileInput
             crossOrigin="true"
@@ -182,9 +187,9 @@ const Home = (props: { onSubmit?: () => void }) => {
             ]}
           />
           <ErrorMessage>
-            {Object.keys(errorMessages).map((index) => (
-              <p key={index}>{errorMessages[parseInt(index)]}</p>
-            ))}
+            {errorMessages.map(
+              (message, index) => message && <p key={index}>{message}</p>
+            )}
           </ErrorMessage>
           <Button type="submit" disabled={disableSubmit}>
             Submit documents
