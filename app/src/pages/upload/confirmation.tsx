@@ -1,9 +1,13 @@
-import { IconList, IconListContent, IconListItem } from "@trussworks/react-uswds";
-
-import Layout from "src/components/Layout";
+import {
+  IconList,
+  IconListContent,
+  IconListItem,
+} from "@trussworks/react-uswds";
 import type { NextPage } from "next";
-import type { ResponseData } from "../api/upload";
 import { useRouter } from "next/router";
+import Layout from "src/components/Layout";
+
+import type { ResponseData } from "../api/upload";
 
 function formatImagePath(path: string) {
   return (path.match("([^/]+$)") || [])[0];
@@ -20,10 +24,11 @@ function generateBlurryIcon(isBlurry: boolean) {
           role="img"
         >
           <use
-            href={`${isBlurry
-              ? "/uswds/img/sprite.svg#error"
-              : "/uswds/img/sprite.svg#check_circle"
-              }`}
+            href={`${
+              isBlurry
+                ? "/uswds/img/sprite.svg#error"
+                : "/uswds/img/sprite.svg#check_circle"
+            }`}
           ></use>
         </svg>
       </span>
@@ -61,7 +66,9 @@ const Confirmation: NextPage = () => {
                     <IconListContent>
                       {" "}
                       {formatImagePath(result.value.imagePath)}
-                      {result.value.isBlurry ? " is blurry" : " successfully uploaded."}
+                      {result.value.isBlurry
+                        ? " is blurry"
+                        : " successfully uploaded."}
                     </IconListContent>
                   </>
                 )}
@@ -71,7 +78,9 @@ const Confirmation: NextPage = () => {
                     <IconListContent>
                       {" "}
                       {formatImagePath(result.reason.imagePath)}
-                      {result.reason.isBlurry ? " is blurry" : " successfully uploaded"}
+                      {result.reason.isBlurry
+                        ? " is blurry"
+                        : " successfully uploaded"}
                     </IconListContent>
                   </>
                 )}

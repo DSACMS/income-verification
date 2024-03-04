@@ -9,7 +9,6 @@ import {
   IconListItem,
   Title,
 } from "@trussworks/react-uswds";
-
 import { ReactElement } from "react";
 
 type Props = {
@@ -19,8 +18,13 @@ type Props = {
 
 const Layout = ({ children, hideContact }: Props): ReactElement => (
   <div>
-    <Alert type={"error"} headingLevel={"h1"} className="usa-alert--emergency usa-alert--no-icon text-center">
-      This website is experimental. Do not upload any personal identifiable information.
+    <Alert
+      type={"error"}
+      headingLevel={"h1"}
+      className="usa-alert--emergency usa-alert--no-icon text-center"
+    >
+      This website is experimental. Do not upload any personal identifiable
+      information.
     </Alert>
 
     <Header className="usa-header usa-header--basic">
@@ -31,9 +35,7 @@ const Layout = ({ children, hideContact }: Props): ReactElement => (
             src="/logo.svg"
             alt="Department of ACME, United States of America"
           />
-          <Title className="usa-logo__text padding-left-2">
-            ACME Demo
-          </Title>
+          <Title className="usa-logo__text padding-left-2">ACME Demo</Title>
         </div>
       </div>
     </Header>

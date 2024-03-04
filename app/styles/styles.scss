@@ -3,6 +3,5 @@
 @forward "uswds-theme-custom-styles";
 @use "uswds";
 
-
 // Include default USWDS h1-h6 style (size, weight, spacing) rulesets
 @include uswds.usa-headings-styles;
