@@ -1,11 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { parseOcrResult } from '@/service/ocr/parser'; // Adjust the import path as necessary
 import { createLogger } from '@/utils/logger';
+import { createDocumentImage } from '@/utils/document';
 import { patterns as adpEarningsStatementPatterns } from '@/service/ocr/document/adpEarningsStatement';
 import ocr from '@/service/ocr';
 import path from 'path';
 
-const { scanImage } = ocr;
+const { getTextFromImagePath, process } = ocr;
 const logger = createLogger('ocr-parser');
 
 // spy on the logger to capture log messages
@@ -88,8 +89,30 @@ describe('parseOcrResult', () => {
       __dirname,
       "../fixture/adp-earnings-statement1.jpeg"
     );
-    const documentText = await scanImage(testDocumentPath, { debug: true });
+    const documentImage = await createDocumentImage(testDocumentPath);
+    const documentText = await getTextFromImagePath(documentImage, { debug: true });
     const result = parseOcrResult(documentText, documentMatchers, logger);
+    const expected = {
+      testDocument: {
+        company: "H GREG NISSAN DELRAY LLC",
+        employeeName: "ASHLEY STELMAN",
+        payDate: "04/28/2023",
+        earnings: "3,286.78",
+        netPay: "292182",
+      }
+    };
+    expect(result).toEqual(expected);
+  });
+});
+
+describe('process', () => {
+  it('should process a document and return parsed data', async () => {
+    const testDocumentPath = path.join(
+      __dirname,
+      "../fixture/adp-earnings-statement1.jpeg"
+    );
+    const documentImage = await createDocumentImage(testDocumentPath);
+    const result = await process(documentImage);
     const expected = {
       testDocument: {
         company: "H GREG NISSAN DELRAY LLC",

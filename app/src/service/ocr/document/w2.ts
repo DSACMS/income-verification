@@ -11,7 +11,7 @@ const patterns = {
 
 export type W2Patterns = typeof patterns;
 
-export const w2: DocumentMatcher<typeof patterns> = {
+export const w2: DocumentMatcher<W2Patterns> = {
     name: 'W2 Statement',
     id: 'w2',
     patterns

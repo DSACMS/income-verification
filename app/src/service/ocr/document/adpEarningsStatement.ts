@@ -15,7 +15,7 @@ export const patterns = {
 
 export type ADPPatterns = typeof patterns;
 
-export const adpEarningsStatement: DocumentMatcher<typeof patterns> = {
+export const adpEarningsStatement: DocumentMatcher<ADPPatterns> = {
     name: 'ADP Earnings Statement',
     id: 'adpEarningsStatement',
     patterns

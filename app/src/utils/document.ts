@@ -4,7 +4,7 @@ import path from "path";
 export type DocumentImage = {
     data: Buffer;
     fileName: string;
-    source: string;
+    sourcePath: string;
     metaData: sharp.Metadata;
     orientation: '0' | '90' | '180' | '270'
 }
@@ -16,7 +16,7 @@ export type DocumentImage = {
  * @param image 
  * @returns 
  */
-export const rotateImage = async (image: DocumentImage): Promise<DocumentImage> => {
+export const rotateDocumentImage = async (image: DocumentImage): Promise<DocumentImage> => {
     const orientations: ('0' | '90' | '180' | '270')[] = ['0', '90', '180', '270'];
     const index = orientations.indexOf(image.orientation);
     const nextIndex = (index + 1) % 4;
@@ -37,13 +37,13 @@ export const rotateImage = async (image: DocumentImage): Promise<DocumentImage> 
 export const createDocumentImage = async (imagePath: string): Promise<DocumentImage> => {
     const image = sharp(imagePath);
     const data = await image.toBuffer();
-    const fileName = path.parse(imagePath).name as string;
+    const fileName = path.parse(imagePath).name;
     const metaData = await image.metadata();
     
     return {
         data,
         fileName,
-        source: imagePath,
+        sourcePath: imagePath,
         orientation: '0',
         metaData,
     };

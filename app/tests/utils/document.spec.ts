@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { rotateImage, createDocumentImage, DocumentImage } from '@/utils/document';
+import { rotateDocumentImage, createDocumentImage, DocumentImage } from '@/utils/document';
 import fs from 'fs';
 import path from 'path';
 
@@ -30,21 +30,22 @@ describe('Image Rotation', () => {
         orientations.forEach((orientation) => {
             const filePath = createTmpPath({ ...originalImage, orientation });
             if (fs.existsSync(filePath)) {
+            // optionally delete the tmp test files after each test
                // fs.unlinkSync(filePath);
             }
         });
     });
 
     it('should rotate the image by 90 degrees', async () => {
-        const rotatedImage = await rotateImage(originalImage);
+        const rotatedImage = await rotateDocumentImage(originalImage);
         expect(rotatedImage.orientation).toBe('90');
         writeImageToDisk(rotatedImage);
     });
 
     it('should properly cycle through all orientations', async () => {
-        let rotatedImage = await rotateImage(originalImage);
+        let rotatedImage = await rotateDocumentImage(originalImage);
         for (let i = 1; i <= 3; i++) { // Rotate three more times to complete the cycle
-            rotatedImage = await rotateImage(rotatedImage);
+            rotatedImage = await rotateDocumentImage(rotatedImage);
             writeImageToDisk(rotatedImage);
         }
         expect(rotatedImage.orientation).toBe('0'); // Should return to original orientation after 4 rotations
