@@ -12,7 +12,7 @@ import Layout from "src/components/Layout";
 
 // TODO: This limit was chosen arbitrarily; once this is no longer a demo,
 // we should choose a limit that is based on actual system restrictions.
-const MAX_FILE_SIZE_MB = 0.3; // 5MB = 5,000,000 bytes
+const MAX_FILE_SIZE_MB = 5; // 5MB = 5,000,000 bytes
 
 const formatter = new Intl.NumberFormat("en", {
   style: "unit",
