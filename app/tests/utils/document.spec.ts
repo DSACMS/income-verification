@@ -9,7 +9,7 @@ const sourcePath = path.join(
     "../fixture/adp-earnings-statement1.jpeg"
 );
 
-const createTmpPath = (image: DocumentImage) => `${tmpPath}/${image.fileName}.${image.orientation}.${image.metaData.format}`
+const createTmpPath = (image: DocumentImage) => `${tmpPath}/${image.fileName}.${image.textOrientation}.${image.metaData.format as string}`
 
 const writeImageToDisk = (image: DocumentImage) => {
     const filePath = createTmpPath(image);
@@ -27,8 +27,8 @@ describe('Image Rotation', () => {
     afterEach(() => {
         // Cleanup: Delete generated files after each test (optional)
         const orientations: ('0' | '90' | '180' | '270')[] = ['0', '90', '180', '270'];
-        orientations.forEach((orientation) => {
-            const filePath = createTmpPath({ ...originalImage, orientation });
+        orientations.forEach((textOrientation) => {
+            const filePath = createTmpPath({ ...originalImage, textOrientation });
             if (fs.existsSync(filePath)) {
             // optionally delete the tmp test files after each test
                // fs.unlinkSync(filePath);
@@ -38,16 +38,16 @@ describe('Image Rotation', () => {
 
     it('should rotate the image by 90 degrees', async () => {
         const rotatedImage = await rotateDocumentImage(originalImage);
-        expect(rotatedImage.orientation).toBe('90');
+        expect(rotatedImage.textOrientation).toBe('90');
         writeImageToDisk(rotatedImage);
     });
 
-    it('should properly cycle through all orientations', async () => {
+    it('should properly cycle through all text orientations', async () => {
         let rotatedImage = await rotateDocumentImage(originalImage);
         for (let i = 1; i <= 3; i++) { // Rotate three more times to complete the cycle
             rotatedImage = await rotateDocumentImage(rotatedImage);
             writeImageToDisk(rotatedImage);
         }
-        expect(rotatedImage.orientation).toBe('0'); // Should return to original orientation after 4 rotations
+        expect(rotatedImage.textOrientation).toBe('0'); // Should return to original orientation after 4 rotations
     });
 });

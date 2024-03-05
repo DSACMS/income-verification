@@ -6,6 +6,13 @@ import { logger as ocrLogger } from ".";
 import { adpEarningsStatement } from "@/service/ocr/document/adpEarningsStatement";
 import { w2 } from "@/service/ocr/document/w2";
 
+export const parsers = {
+  adpEarningsStatement,
+  w2,
+};
+
+export type ParserKeys = keyof typeof parsers | string;
+
 export type EmployerData = {
   employerIdentificationNumber: string;
   wagesTipsOthers: string;
@@ -18,20 +25,15 @@ export type ParsedData = {
   ssn: string;
   bottomLines: string;
 };
-
 export type ParsingPatterns = ADPPatterns | W2Patterns;
-export type ParsingFunctionResult = Record<'w2' | 'adpEarningsStatement', Partial<ParsingPatterns>>
+
+export type ParsingFunctionResult = Record<ParserKeys, Partial<ParsingPatterns>>
 
 export type ParsingFunction = (
   documentText: string,
-  patterns: DocumentMatcher<ParsingPatterns>[],
+  patterns: DocumentMatcher<ParserKeys, ParsingPatterns>[],
   // todo the Record string should be a generic union that's dynaimcally determined. hard-coding for now
   logger: typeof ocrLogger) => ParsingFunctionResult
-
-export const parsers = {
-  adpEarningsStatement,
-  w2,
-};
 
 export const parseOcrResult: ParsingFunction = (documentText, documentMatchers, logger): ParsingFunctionResult => {
   logger.info("Parsing W2 Data");

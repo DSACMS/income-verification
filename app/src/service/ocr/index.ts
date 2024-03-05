@@ -1,11 +1,11 @@
 import { createWorker } from "tesseract.js";
 import { createLogger } from "@/utils/logger";
 import { DocumentImage, rotateDocumentImage } from "@/utils/document";
-import { parseOcrResult, parsers } from "@/service/ocr/parser";
+import { type ParserKeys, parseOcrResult, parsers } from "@/service/ocr/parser";
 
-export type DocumentMatcher<P extends Record<string, RegExp>> = {
+export type DocumentMatcher<K extends ParserKeys | string = string, P extends Record<string, RegExp> = Record<string, RegExp>> = {
   name: string;
-  id: 'w2' | 'adpEarningsStatement';
+  id: K;
   patterns: P;
 };
 
@@ -33,7 +33,7 @@ const getTextFromImagePath = async (document: DocumentImage, opts: OcrOptions) =
 };
 
 const process = async (document:DocumentImage) => {
-  const orientation = document.orientation;
+  const orientation = document.textOrientation;
   if(orientation !== '0'){
     document = await rotateDocumentImage(document);
   }

@@ -3,7 +3,7 @@ import { parseOcrResult } from '@/service/ocr/parser'; // Adjust the import path
 import { createLogger } from '@/utils/logger';
 import { createDocumentImage } from '@/utils/document';
 import { patterns as adpEarningsStatementPatterns } from '@/service/ocr/document/adpEarningsStatement';
-import ocr from '@/service/ocr';
+import ocr, { DocumentMatcher } from '@/service/ocr';
 import path from 'path';
 
 const { getTextFromImagePath, process } = ocr;
@@ -13,6 +13,14 @@ const logger = createLogger('ocr-parser');
 vi.spyOn(logger, 'info');
 
 // Define a sample matcher with patterns to simulate a realistic scenario
+const testParserPatterns = {
+  line1: /(Line 1 Pattern to check for)/,
+  line2: /(Line 2 Pattern to check for)/,
+  line3: /(Line 3 Pattern to check for)/,
+  ...adpEarningsStatementPatterns
+};
+
+// Define our document matchers
 const documentMatchers = [
   {
     id: 'testDocument',
@@ -24,7 +32,7 @@ const documentMatchers = [
       ...adpEarningsStatementPatterns
     },
   },
-];
+] as DocumentMatcher<'testDocument', typeof testParserPatterns>[];
 
 describe('parseOcrResult', () => {
   it('should correctly parse document text and return matched patterns', () => {

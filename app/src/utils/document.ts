@@ -6,7 +6,7 @@ export type DocumentImage = {
     fileName: string;
     sourcePath: string;
     metaData: sharp.Metadata;
-    orientation: '0' | '90' | '180' | '270'
+    textOrientation: '0' | '90' | '180' | '270'
 }
 
 /**
@@ -18,7 +18,7 @@ export type DocumentImage = {
  */
 export const rotateDocumentImage = async (image: DocumentImage): Promise<DocumentImage> => {
     const orientations: ('0' | '90' | '180' | '270')[] = ['0', '90', '180', '270'];
-    const index = orientations.indexOf(image.orientation);
+    const index = orientations.indexOf(image.textOrientation);
     const nextIndex = (index + 1) % 4;
     const rotatedImageData = await sharp(image.data)
         .rotate(90)
@@ -26,7 +26,7 @@ export const rotateDocumentImage = async (image: DocumentImage): Promise<Documen
 
     return {
         ...image,
-        orientation: orientations[nextIndex],
+        textOrientation: orientations[nextIndex],
         data: rotatedImageData,
     };
 };
@@ -44,7 +44,7 @@ export const createDocumentImage = async (imagePath: string): Promise<DocumentIm
         data,
         fileName,
         sourcePath: imagePath,
-        orientation: '0',
+        textOrientation: '0',
         metaData,
     };
 };
