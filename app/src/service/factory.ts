@@ -1,8 +1,8 @@
+import { DocumentMatcher } from "@/service/ocr";
+import { DocumentImage } from "@/utils/document";
+import path from "path";
 import pino, { DestinationStream, LoggerOptions } from "pino";
 import sharp from "sharp";
-import path from "path";
-import { DocumentImage } from "@/utils/document";
-import { DocumentMatcher } from "@/service/ocr";
 
 export const createLogger = (
   name: string,
@@ -19,28 +19,30 @@ export const createLogger = (
 };
 
 export const createDocumentMatcher = <K extends string = string>(
-    name: string,
-    id: K,
-    patterns: Record<string, RegExp>
+  name: string,
+  id: K,
+  patterns: Record<string, RegExp>
 ): DocumentMatcher<K, typeof patterns> => {
-    return {
-        name,
-        id,
-        patterns,
-    };
-}
+  return {
+    name,
+    id,
+    patterns,
+  };
+};
 
-export const createDocumentImage = async (imagePath: string): Promise<DocumentImage> => {
-    const image = sharp(imagePath);
-    const data = await image.toBuffer();
-    const fileName = path.parse(imagePath).name;
-    const metaData = await image.metadata();
-    
-    return {
-        data,
-        fileName,
-        sourcePath: imagePath,
-        textOrientation: '0',
-        metaData,
-    };
+export const createDocumentImage = async (
+  imagePath: string
+): Promise<DocumentImage> => {
+  const image = sharp(imagePath);
+  const data = await image.toBuffer();
+  const fileName = path.parse(imagePath).name;
+  const metaData = await image.metadata();
+
+  return {
+    data,
+    fileName,
+    sourcePath: imagePath,
+    textOrientation: "0",
+    metaData,
+  };
 };

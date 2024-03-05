@@ -1,9 +1,12 @@
-import { createWorker } from "tesseract.js";
 import { createLogger } from "@/service/factory";
-import { DocumentImage, rotateDocumentImage } from "@/utils/document";
 import { type ParserKeys, parseOcrResult, parsers } from "@/service/ocr/parser";
+import { DocumentImage, rotateDocumentImage } from "@/utils/document";
+import { createWorker } from "tesseract.js";
 
-export type DocumentMatcher<K extends ParserKeys | string = string, P extends Record<string, RegExp> = Record<string, RegExp>> = {
+export type DocumentMatcher<
+  K extends ParserKeys | string = string,
+  P extends Record<string, RegExp> = Record<string, RegExp>
+> = {
   name: string;
   id: K;
   patterns: P;
@@ -21,7 +24,10 @@ export const logger = createLogger("ocr-parser", {
   },
 });
 
-const getTextFromImagePath = async (document: DocumentImage, opts: OcrOptions) => {
+const getTextFromImagePath = async (
+  document: DocumentImage,
+  opts: OcrOptions
+) => {
   const worker = await createWorker("eng", 1, {
     logger: opts.debug ? (message) => logger.debug(message) : undefined,
   });
@@ -32,9 +38,9 @@ const getTextFromImagePath = async (document: DocumentImage, opts: OcrOptions) =
   return output;
 };
 
-const process = async (document:DocumentImage) => {
+const process = async (document: DocumentImage) => {
   const orientation = document.textOrientation;
-  if(orientation !== '0'){
+  if (orientation !== "0") {
     document = await rotateDocumentImage(document);
   }
 
@@ -48,7 +54,7 @@ const process = async (document:DocumentImage) => {
 const ocrService = {
   process,
   logger,
-  getTextFromImagePath
+  getTextFromImagePath,
 };
 
 export default ocrService;
