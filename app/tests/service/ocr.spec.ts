@@ -85,7 +85,9 @@ describe('parseOcrResult', () => {
 
   it('should handle documents with no matches', () => {
     const documentText = `Unrelated text that does not match any pattern`;
-    const expected = {};
+    const expected = {
+      testDocument: {},
+    };
     const result = parseOcrResult(documentText, documentMatchers, logger);
 
     // Assert the result is an empty object for no matches
@@ -122,13 +124,16 @@ describe('process', () => {
     const documentImage = await createDocumentImage(testDocumentPath);
     const result = await process(documentImage);
     const expected = {
-      testDocument: {
-        company: "H GREG NISSAN DELRAY LLC",
-        employeeName: "ASHLEY STELMAN",
-        payDate: "04/28/2023",
-        earnings: "3,286.78",
-        netPay: "292182",
-      }
+      adpEarningsStatement: {
+          "company": "H GREG NISSAN DELRAY LLC",
+          "earnings": "3,286.78",
+          "employeeName": "ASHLEY STELMAN",
+          "netPay": "292182",
+          "payDate": "04/28/2023",
+      },
+      w2: {
+        wagesTipsOthers: "3,286.78",
+      },
     };
     expect(result).toEqual(expected);
   });

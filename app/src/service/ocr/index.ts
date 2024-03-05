@@ -15,7 +15,7 @@ export type OcrOptions = {
 
 // main logger
 export const logger = createLogger("ocr-parser", {
-  enabled: process.env["LOG_LEVEL"] === "debug",
+  enabled: false,
   mixin: () => {
     return { module: "ocr-parser" };
   },

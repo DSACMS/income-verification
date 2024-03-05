@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 
 const tmpPath = path.join(__dirname, "../var");
+
 const sourcePath = path.join(
     __dirname,
     "../fixture/adp-earnings-statement1.jpeg"
@@ -21,6 +22,12 @@ const writeImageToDisk = (image: DocumentImage) => {
 describe('Image Rotation', () => {
     let originalImage: DocumentImage;
 
+    beforeAll(() => {
+        if (!fs.existsSync(tmpPath)) {
+            fs.mkdirSync(tmpPath);
+        }
+    });
+
     beforeEach(async () => {
         originalImage = await createDocumentImage(sourcePath);
     });
@@ -31,8 +38,8 @@ describe('Image Rotation', () => {
         orientations.forEach((textOrientation) => {
             const filePath = createTmpPath({ ...originalImage, textOrientation });
             if (fs.existsSync(filePath)) {
-            // optionally delete the tmp test files after each test
-               // fs.unlinkSync(filePath);
+                // optionally delete the tmp test files after each test
+                // fs.unlinkSync(filePath);
             }
         });
     });
