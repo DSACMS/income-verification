@@ -129,7 +129,7 @@ describe("process", () => {
     );
     const documentImage = await createDocumentImage(testDocumentPath);
     const result = await process(documentImage);
-    const expected = {
+    const expectedDocs = {
       adpEarningsStatement: {
         company: "H GREG NISSAN DELRAY LLC",
         earnings: "3,286.78",
@@ -141,6 +141,9 @@ describe("process", () => {
         wagesTipsOthers: "3,286.78",
       },
     };
-    expect(result).toEqual(expected);
+    expect(result.documents).toEqual(expectedDocs);
+    expect(result.percentages.adpEarningsStatement).toBe(63);
+    expect(result.percentages.w2).toBe(17);
+    expect(result.image).toEqual(documentImage);
   });
 });
