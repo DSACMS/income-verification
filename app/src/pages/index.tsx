@@ -1,7 +1,8 @@
 import { Button } from "@trussworks/react-uswds";
 import { useRouter } from "next/router";
-import IncomeVerificationStepIndicator from "src/components/IncomeVerificationStepIndicator";
-import Layout from "src/components/Layout";
+
+import IncomeVerificationStepIndicator from "../components/IncomeVerificationStepIndicator";
+import Layout from "../components/Layout";
 
 function Card(props: { children: React.ReactNode; className?: string }) {
   return (
