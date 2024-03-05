@@ -44,14 +44,30 @@ const getTextFromImagePath = async (
   return output;
 };
 
+
+// a function that rotates an image and processes it for each orientation
+const processRotatedImages = async (
+  document: DocumentImage,
+): Promise< Record<number, ProcessedImageResult>> => {
+  const orientations = [0, 90, 180, 270];
+  const results: Record<number, ProcessedImageResult> = {
+    0: {} as ProcessedImageResult,
+    90: {} as ProcessedImageResult,
+    180: {} as ProcessedImageResult,
+    270: {} as ProcessedImageResult,
+  };
+
+  for (const orientation of orientations) {
+    const rotatedImage = await rotateDocumentImage(document);
+    results[orientation] = await process(rotatedImage);
+  }
+    
+  return results;
+};
+
 const process = async (
   document: DocumentImage
 ): Promise<ProcessedImageResult> => {
-  const orientation = document.textOrientation;
-  if (orientation !== "0") {
-    document = await rotateDocumentImage(document);
-  }
-
   const text = await getTextFromImagePath(document, { debug: true });
   const parsersArray = Object.values(parsers);
   const docs = parseOcrResult(text, parsersArray, logger);
@@ -86,6 +102,7 @@ const process = async (
 
 const ocrService = {
   process,
+  processRotatedImages,
   logger,
   getTextFromImagePath,
 };
