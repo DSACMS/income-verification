@@ -29,7 +29,7 @@ const Layout = ({ children, hideContact }: Props): ReactElement => (
 
     <Header className="usa-header usa-header--basic">
       <div className="usa-nav-container">
-        <div className="usa-navbar usa-logo height-8">
+        <div className="usa-navbar usa-logo height-8 display-flex flex-align-center">
           <img
             className="width-6"
             src="/logo.svg"
