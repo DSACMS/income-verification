@@ -44,7 +44,9 @@ const getTextFromImagePath = async (
   return output;
 };
 
-const process = async (document: DocumentImage): Promise<ProcessedImageResult> => {
+const process = async (
+  document: DocumentImage
+): Promise<ProcessedImageResult> => {
   const orientation = document.textOrientation;
   if (orientation !== "0") {
     document = await rotateDocumentImage(document);
@@ -57,13 +59,13 @@ const process = async (document: DocumentImage): Promise<ProcessedImageResult> =
   // let's keep track of the number of matched fields per parser
   const percentages: Record<string, number> = {};
 
-  parsersArray.forEach(parser => {
+  parsersArray.forEach((parser) => {
     const docResults = docs[parser.id];
     const totalFields = Object.keys(parser.patterns).length;
     let matchedFields = 0;
 
     if (docResults) {
-      Object.keys(parser.patterns).forEach(field => {
+      Object.keys(parser.patterns).forEach((field) => {
         if (docResults[field]) {
           matchedFields++;
         }
@@ -76,8 +78,8 @@ const process = async (document: DocumentImage): Promise<ProcessedImageResult> =
   const result = {
     documents: docs,
     image: document,
-    percentages
-  }
+    percentages,
+  };
 
   return result;
 };
