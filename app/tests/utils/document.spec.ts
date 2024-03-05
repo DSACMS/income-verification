@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { rotateDocumentImage, createDocumentImage, DocumentImage } from '@/utils/document';
+import { rotateDocumentImage, DocumentImage } from '@/utils/document';
+import { createDocumentImage } from '@/service/factory';
 import fs from 'fs';
 import path from 'path';
 

@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { parseOcrResult } from '@/service/ocr/parser'; // Adjust the import path as necessary
-import { createLogger } from '@/utils/logger';
-import { createDocumentImage } from '@/utils/document';
-import { patterns as adpEarningsStatementPatterns } from '@/service/ocr/document/adpEarningsStatement';
+import { createLogger, createDocumentImage } from '@/service/factory';
+import { adpEarningsStatement } from '@/service/ocr/document/adpEarningsStatement';
 import ocr, { DocumentMatcher } from '@/service/ocr';
 import path from 'path';
 
 const { getTextFromImagePath, process } = ocr;
+const adpEarningsStatementPatterns = adpEarningsStatement.patterns;
 const logger = createLogger('ocr-parser');
 
 // spy on the logger to capture log messages
