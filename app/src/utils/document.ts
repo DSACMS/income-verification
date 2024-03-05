@@ -1,5 +1,4 @@
 import sharp from "sharp";
-import path from "path";
 
 export type DocumentImage = {
     data: Buffer;
@@ -28,23 +27,5 @@ export const rotateDocumentImage = async (image: DocumentImage): Promise<Documen
         ...image,
         textOrientation: orientations[nextIndex],
         data: rotatedImageData,
-    };
-};
-
-/**
- * a function to create a DocumentImage object from a file path
- */
-export const createDocumentImage = async (imagePath: string): Promise<DocumentImage> => {
-    const image = sharp(imagePath);
-    const data = await image.toBuffer();
-    const fileName = path.parse(imagePath).name;
-    const metaData = await image.metadata();
-    
-    return {
-        data,
-        fileName,
-        sourcePath: imagePath,
-        textOrientation: '0',
-        metaData,
     };
 };

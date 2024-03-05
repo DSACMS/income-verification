@@ -1,5 +1,5 @@
 import { createWorker } from "tesseract.js";
-import { createLogger } from "@/utils/logger";
+import { createLogger } from "@/service/factory";
 import { DocumentImage, rotateDocumentImage } from "@/utils/document";
 import { type ParserKeys, parseOcrResult, parsers } from "@/service/ocr/parser";
 
@@ -15,7 +15,7 @@ export type OcrOptions = {
 
 // main logger
 export const logger = createLogger("ocr-parser", {
-  enabled: process.env.LOG_LEVEL === "debug",
+  enabled: process.env["LOG_LEVEL"] === "debug",
   mixin: () => {
     return { module: "ocr-parser" };
   },

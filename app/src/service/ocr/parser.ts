@@ -7,8 +7,8 @@ import { adpEarningsStatement } from "@/service/ocr/document/adpEarningsStatemen
 import { w2 } from "@/service/ocr/document/w2";
 
 export const parsers = {
-  adpEarningsStatement,
-  w2,
+  adpEarningsStatement: adpEarningsStatement,
+  w2: w2,
 };
 
 export type ParserKeys = keyof typeof parsers | string;
