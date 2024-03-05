@@ -1,17 +1,16 @@
 import { type DocumentMatcher } from ".";
-import { type ADPPatterns } from "./document/adpEarningsStatement";
-import { type W2Patterns } from "./document/w2";
 import { logger as ocrLogger } from ".";
+
 // document parsers
-import { adpEarningsStatement } from "@/service/ocr/document/adpEarningsStatement";
-import { w2 } from "@/service/ocr/document/w2";
+import { type ADPPatterns, adpEarningsStatement} from "@/service/ocr/document/adpEarningsStatement";
+import { type W2FormPatterns, w2Form} from "@/service/ocr/document/w2";
 
 export const parsers = {
   adpEarningsStatement: adpEarningsStatement,
-  w2: w2,
+  w2: w2Form,
 };
 
-export type ParserKeys = keyof typeof parsers | string;
+export type ParserKeys = keyof typeof parsers;
 
 export type EmployerData = {
   employerIdentificationNumber: string;
@@ -25,31 +24,33 @@ export type ParsedData = {
   ssn: string;
   bottomLines: string;
 };
-export type ParsingPatterns = ADPPatterns | W2Patterns;
+export type ParsingPatterns = ADPPatterns | W2FormPatterns;
 
-export type ParsingFunctionResult = Record<ParserKeys, Partial<ParsingPatterns>>
+export type ParsingFunctionResult = Record<ParserKeys, Record<string, string>>;
 
 export type ParsingFunction = (
   documentText: string,
   patterns: DocumentMatcher<ParserKeys, ParsingPatterns>[],
-  // todo the Record string should be a generic union that's dynaimcally determined. hard-coding for now
   logger: typeof ocrLogger) => ParsingFunctionResult
 
-export const parseOcrResult: ParsingFunction = (documentText, documentMatchers, logger): ParsingFunctionResult => {
-  logger.info("Parsing W2 Data");
-
-  const documentMatches = documentMatchers.reduce((acc: ParsingFunctionResult, matcher) => {
-    for (const [key, pattern] of Object.entries(matcher.patterns)) {
-
-      const match = documentText.match(pattern);
-      if (match) {
-        acc[matcher.id] = { ...acc[matcher.id], [key]: match[1] };
+  export const parseOcrResult: ParsingFunction = (documentText, documentMatchers, logger): ParsingFunctionResult => {
+    logger.info("Parsing OCR Data");
+  
+    const documentMatches = documentMatchers.reduce((acc: ParsingFunctionResult, matcher: DocumentMatcher<ParserKeys, Record<string, RegExp>>) => {
+      const { id, patterns } = matcher;
+      acc[id] = acc[id] || {}; // Ensure the key exists
+      
+      for (const [key, pattern] of Object.entries(patterns)) {
+        const match = documentText.match(pattern);
+        if (match && match[1]) {
+          acc[id][key] = match[1]; // Assign the string match to the result object
+        }
+        logger.info(`${key}: ${match && match[1] ? match[1] : "null"}`);
       }
-      logger.info(`${key}: ${match ? match[1] : "null"}`);
-    }
 
-    return acc;
-  }, {} as ParsingFunctionResult);
-
-  return documentMatches;
-}
+      return acc;
+    }, {} as ParsingFunctionResult);
+  
+    return documentMatches;
+  };
+  

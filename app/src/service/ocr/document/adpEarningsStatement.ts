@@ -1,6 +1,6 @@
 import { createDocumentMatcher } from "@/service/factory";
 
-export const adpEarningsStatementPatterns = createDocumentMatcher(
+export const adpEarningsStatement = createDocumentMatcher(
     'ADP Earnings Statement',
     'adpEarningsStatement',
     {
@@ -16,3 +16,5 @@ export const adpEarningsStatementPatterns = createDocumentMatcher(
         netPay: /Net Pay\s*\$([\d,.]+)/,
     }
 );
+
+export type ADPPatterns = typeof adpEarningsStatement.patterns;

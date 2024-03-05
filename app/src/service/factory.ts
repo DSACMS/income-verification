@@ -18,7 +18,7 @@ export const createLogger = (
   });
 };
 
-export const createDocumentMatcher = <K extends string>(
+export const createDocumentMatcher = <K extends string = string>(
     name: string,
     id: K,
     patterns: Record<string, RegExp>
