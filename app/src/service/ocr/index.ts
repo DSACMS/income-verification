@@ -1,6 +1,6 @@
 import { createLogger } from "@/service/factory";
 import { type ParserKeys, parseOcrResult, parsers } from "@/service/ocr/parser";
-import { DocumentImage, rotateDocumentImage } from "@/utils/document";
+import { DocumentImage, rotateDocumentImage, orientations } from "@/utils/document";
 import { createWorker } from "tesseract.js";
 
 export type DocumentMatcher<
@@ -49,7 +49,6 @@ const getTextFromImagePath = async (
 const processRotatedImages = async (
   document: DocumentImage,
 ): Promise< Record<number, ProcessedImageResult>> => {
-  const orientations = [0, 90, 180, 270];
   const results: Record<number, ProcessedImageResult> = {
     0: {} as ProcessedImageResult,
     90: {} as ProcessedImageResult,
@@ -92,8 +91,8 @@ const process = async (
   });
 
   const result = {
-    documents: docs,
     image: document,
+    documents: docs,
     percentages,
   };
 

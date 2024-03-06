@@ -1,11 +1,20 @@
 import sharp from "sharp";
 
+export type DocumentOrientation = "0" | "90" | "180" | "270";
+
+export const orientations: DocumentOrientation[] = [
+  "0",
+  "90",
+  "180",
+  "270",
+];
+
 export type DocumentImage = {
   data: Buffer;
   fileName: string;
   sourcePath: string;
   metaData: sharp.Metadata;
-  textOrientation: "0" | "90" | "180" | "270";
+  textOrientation: DocumentOrientation;
 };
 
 /**
@@ -18,12 +27,6 @@ export type DocumentImage = {
 export const rotateDocumentImage = async (
   image: DocumentImage
 ): Promise<DocumentImage> => {
-  const orientations: ("0" | "90" | "180" | "270")[] = [
-    "0",
-    "90",
-    "180",
-    "270",
-  ];
   const index = orientations.indexOf(image.textOrientation);
   const nextIndex = (index + 1) % 4;
   const rotatedImageData = await sharp(image.data).rotate(90).toBuffer();

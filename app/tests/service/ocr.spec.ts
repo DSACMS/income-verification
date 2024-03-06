@@ -1,12 +1,11 @@
-// Adjust the import path as necessary
+import { describe, expect, it } from "vitest";
 import { createDocumentImage, createLogger } from "@/service/factory";
 import ocr, { DocumentMatcher } from "@/service/ocr";
 import { adpEarningsStatement } from "@/service/ocr/document/adpEarningsStatement";
 import { parseOcrResult } from "@/service/ocr/parser";
 import path from "path";
-import { describe, expect, it } from "vitest";
 
-const { getTextFromImagePath, process } = ocr;
+const { getTextFromImagePath, process, processRotatedImages } = ocr;
 const adpEarningsStatementPatterns = adpEarningsStatement.patterns;
 const logger = createLogger("ocr-parser");
 
@@ -26,12 +25,7 @@ const documentMatchers = [
   {
     id: "testDocument",
     name: "Test Document Matcher",
-    patterns: {
-      line1: /(Line 1 Pattern to check for)/,
-      line2: /(Line 2 Pattern to check for)/,
-      line3: /(Line 3 Pattern to check for)/,
-      ...adpEarningsStatementPatterns,
-    },
+    patterns: testParserPatterns,
   },
 ] as DocumentMatcher<"testDocument", typeof testParserPatterns>[];
 
@@ -146,4 +140,33 @@ describe("process", () => {
     expect(result.percentages.w2).toBe(17);
     expect(result.image).toEqual(documentImage);
   });
+});
+
+describe("processRotatedImages", () => {
+  it.only("should process a document and return parsed data for each orientation", async () => {
+    const testDocumentPath = path.join(
+      __dirname,
+      "../fixture/adp-earnings-statement1.jpeg"
+    );
+    const documentImage = await createDocumentImage(testDocumentPath);
+    const result = await processRotatedImages(documentImage);
+    const expectedDocs = {
+      adpEarningsStatement: {
+        company: "H GREG NISSAN DELRAY LLC",
+        earnings: "3,286.78",
+        employeeName: "ASHLEY STELMAN",
+        netPay: "292182",
+        payDate: "04/28/2023",
+      },
+      w2: {
+        wagesTipsOthers: "3,286.78",
+      },
+    };
+    for (const orientation in result) {
+      expect(result[orientation].documents).toEqual(expectedDocs);
+      expect(result[orientation].percentages.adpEarningsStatement).toBe(63);
+      expect(result[orientation].percentages.w2).toBe(17);
+      expect(result[orientation].image).toEqual(documentImage);
+    }
+  }, {timeout: 30000});
 });
