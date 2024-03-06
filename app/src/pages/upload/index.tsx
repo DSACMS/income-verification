@@ -10,6 +10,16 @@ import { useRouter } from "next/router";
 import { SyntheticEvent, useEffect, useState } from "react";
 import Layout from "src/components/Layout";
 
+const FILE_TYPES = [
+  { label: "JPEG", mimetype: "image/jpeg" },
+  { label: "PNG", mimetype: "image/png" },
+  { label: "WEBP", mimetype: "image/webp" },
+  { label: "AVIF", mimetype: "image/avif" },
+  { label: "HEIC", mimetype: "image/heic" },
+  { label: "TIFF", mimetype: "image/tiff" },
+];
+
+const list = new Intl.ListFormat("en", { type: "disjunction" });
 // TODO: This limit was chosen arbitrarily; once this is no longer a demo,
 // we should choose a limit that is based on actual system restrictions.
 const MAX_FILE_SIZE_MB = 5; // 5MB = 5,000,000 bytes
@@ -120,15 +130,15 @@ const Home = (props: { onSubmit?: () => void }) => {
             Select files or photos
           </Label>
           <span className="usa-hint" id="file-input-multiple-hint">
-            Files should be in PDF, JPG, PNG, TIFF, or HEIC format. Files must
-            be under {formatter.format(MAX_FILE_SIZE_MB)}.
+            Files should be in {list.format(FILE_TYPES.map((t) => t.label))}{" "}
+            format. Files must be under {formatter.format(MAX_FILE_SIZE_MB)}.
           </span>
           <FileInput
             crossOrigin="true"
             id="fileInputMultiple"
             name="fileInputMultiple"
             aria-describedby="file-input-multiple-hint"
-            accept="image/*"
+            accept={FILE_TYPES.map((t) => t.mimetype).join(", ")}
             onChange={onFileChange}
             multiple
           />
