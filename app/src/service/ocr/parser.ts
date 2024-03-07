@@ -13,7 +13,7 @@ export const parsers = {
   w2: w2Form,
 };
 
-export type ParserKeys = keyof typeof parsers | string;
+export type ParserKeys = "adpEarningsStatement" | "w2" | string;
 
 export type EmployerData = {
   employerIdentificationNumber: string;
