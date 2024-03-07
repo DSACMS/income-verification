@@ -1,5 +1,5 @@
 import { DocumentMatcher } from "@/service/ocr";
-import { DocumentImage } from "@/utils/document";
+import { DocumentImage, type DocumentOrientation } from "@/utils/document";
 import path from "path";
 import pino, { DestinationStream, LoggerOptions } from "pino";
 import sharp from "sharp";
@@ -18,7 +18,7 @@ export const createLogger = (
   });
 };
 
-export const createDocumentMatcher = <K extends string = string>(
+export const createDocumentMatcher = <K extends string>(
   name: string,
   id: K,
   patterns: Record<string, RegExp>
@@ -31,7 +31,8 @@ export const createDocumentMatcher = <K extends string = string>(
 };
 
 export const createDocumentImage = async (
-  imagePath: string
+  imagePath: string,
+  textOrientation: DocumentOrientation = 0
 ): Promise<DocumentImage> => {
   const image = sharp(imagePath);
   const data = await image.toBuffer();
@@ -42,7 +43,7 @@ export const createDocumentImage = async (
     data,
     fileName,
     sourcePath: imagePath,
-    textOrientation: "0",
+    textOrientation: textOrientation,
     metaData,
   };
 };

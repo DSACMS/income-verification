@@ -1,10 +1,15 @@
 import { createLogger } from "@/service/factory";
 import { type ParserKeys, parseOcrResult, parsers } from "@/service/ocr/parser";
-import { DocumentImage, rotateDocumentImage, orientations } from "@/utils/document";
+import {
+  DocumentImage,
+  DocumentOrientation,
+  orientations,
+  rotateDocumentImage,
+} from "@/utils/document";
 import { createWorker } from "tesseract.js";
 
 export type DocumentMatcher<
-  K extends ParserKeys | string,
+  K extends ParserKeys,
   P extends Record<string, RegExp> = Record<string, RegExp>
 > = {
   name: string;
@@ -20,6 +25,15 @@ export type ProcessedImageResult = {
   documents: ReturnType<typeof parseOcrResult>;
   image: DocumentImage;
   percentages: Record<ParserKeys, number>;
+  confidence: number;
+  rotatedOrientation?: DocumentOrientation;
+};
+
+export type ProcessedRotatedImagesResult = ProcessedImageResult[];
+
+export type TextFromImagePathResult = {
+  text: string;
+  confidence: number;
 };
 
 // main logger
@@ -37,37 +51,51 @@ const getTextFromImagePath = async (
   const worker = await createWorker("eng", 1, {
     logger: opts.debug ? (message) => logger.debug(message) : undefined,
   });
-  const result = await worker.recognize(document.sourcePath);
-  const output = result.data.text;
+
+  const result = await worker.recognize(document.data, {
+    rotateAuto: true,
+  });
+
+  const output = {
+    text: result.data.text,
+    confidence: result.data.confidence,
+  };
+
   await worker.terminate();
 
   return output;
 };
 
-
 // a function that rotates an image and processes it for each orientation
-const processRotatedImages = async (
-  document: DocumentImage,
-): Promise< Record<number, ProcessedImageResult>> => {
-  const results: Record<number, ProcessedImageResult> = {
-    0: {} as ProcessedImageResult,
-    90: {} as ProcessedImageResult,
-    180: {} as ProcessedImageResult,
-    270: {} as ProcessedImageResult,
+const processDocument = async (
+  document: DocumentImage
+): Promise<ProcessedRotatedImagesResult> => {
+  const processImage = async (
+    orientation: DocumentOrientation
+  ): Promise<ProcessedImageResult> => {
+    const rotatedDocumentImage = await rotateDocumentImage(
+      document,
+      orientation
+    );
+    const result = await process(rotatedDocumentImage);
+    result.rotatedOrientation = orientation;
+
+    return result;
   };
 
-  for (const orientation of orientations) {
-    const rotatedImage = await rotateDocumentImage(document);
-    results[orientation] = await process(rotatedImage);
-  }
-    
-  return results;
+  // Map each orientation to a processing function that returns a promise.
+  const promises = orientations.map((orientation) => processImage(orientation));
+  const rotated = await Promise.all(promises);
+
+  return rotated;
 };
 
 const process = async (
   document: DocumentImage
 ): Promise<ProcessedImageResult> => {
-  const text = await getTextFromImagePath(document, { debug: true });
+  const { text, confidence } = await getTextFromImagePath(document, {
+    debug: true,
+  });
   const parsersArray = Object.values(parsers);
   const docs = parseOcrResult(text, parsersArray, logger);
 
@@ -94,6 +122,7 @@ const process = async (
     image: document,
     documents: docs,
     percentages,
+    confidence,
   };
 
   return result;
@@ -101,7 +130,7 @@ const process = async (
 
 const ocrService = {
   process,
-  processRotatedImages,
+  processDocument,
   logger,
   getTextFromImagePath,
 };

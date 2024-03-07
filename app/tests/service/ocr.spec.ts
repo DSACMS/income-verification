@@ -1,11 +1,12 @@
-import { describe, expect, it } from "vitest";
 import { createDocumentImage, createLogger } from "@/service/factory";
 import ocr, { DocumentMatcher } from "@/service/ocr";
 import { adpEarningsStatement } from "@/service/ocr/document/adpEarningsStatement";
 import { parseOcrResult } from "@/service/ocr/parser";
+import { rotateDocumentImage } from "@/utils/document";
 import path from "path";
+import { describe, expect, it } from "vitest";
 
-const { getTextFromImagePath, process, processRotatedImages } = ocr;
+const { getTextFromImagePath, process, processDocument } = ocr;
 const adpEarningsStatementPatterns = adpEarningsStatement.patterns;
 const logger = createLogger("ocr-parser");
 
@@ -98,17 +99,17 @@ describe("parseOcrResult", () => {
       "../fixture/adp-earnings-statement1.jpeg"
     );
     const documentImage = await createDocumentImage(testDocumentPath);
-    const documentText = await getTextFromImagePath(documentImage, {
+    const { text } = await getTextFromImagePath(documentImage, {
       debug: true,
     });
-    const result = parseOcrResult(documentText, documentMatchers, logger);
+    const result = parseOcrResult(text, documentMatchers, logger);
     const expected = {
       testDocument: {
         company: "H GREG NISSAN DELRAY LLC",
         employeeName: "ASHLEY STELMAN",
         payDate: "04/28/2023",
         earnings: "3,286.78",
-        netPay: "292182",
+        netPay: "2,921.82",
       },
     };
     expect(result).toEqual(expected);
@@ -128,7 +129,7 @@ describe("process", () => {
         company: "H GREG NISSAN DELRAY LLC",
         earnings: "3,286.78",
         employeeName: "ASHLEY STELMAN",
-        netPay: "292182",
+        netPay: "2,921.82",
         payDate: "04/28/2023",
       },
       w2: {
@@ -142,31 +143,62 @@ describe("process", () => {
   });
 });
 
-describe("processRotatedImages", () => {
-  it.only("should process a document and return parsed data for each orientation", async () => {
-    const testDocumentPath = path.join(
-      __dirname,
-      "../fixture/adp-earnings-statement1.jpeg"
-    );
-    const documentImage = await createDocumentImage(testDocumentPath);
-    const result = await processRotatedImages(documentImage);
-    const expectedDocs = {
-      adpEarningsStatement: {
-        company: "H GREG NISSAN DELRAY LLC",
-        earnings: "3,286.78",
-        employeeName: "ASHLEY STELMAN",
-        netPay: "292182",
-        payDate: "04/28/2023",
-      },
-      w2: {
-        wagesTipsOthers: "3,286.78",
-      },
-    };
-    for (const orientation in result) {
-      expect(result[orientation].documents).toEqual(expectedDocs);
-      expect(result[orientation].percentages.adpEarningsStatement).toBe(63);
-      expect(result[orientation].percentages.w2).toBe(17);
-      expect(result[orientation].image).toEqual(documentImage);
+describe("processDocument", () => {
+  it(
+    "should rotate an incorrectly oriented image and process it",
+    async () => {
+      const testDocumentPath = path.join(
+        __dirname,
+        "../fixture/adp-earnings-statement1.jpeg"
+      );
+      const documentImage = await createDocumentImage(testDocumentPath);
+      // rotate the doc by 90 degrees
+      const rotatedImage = await rotateDocumentImage(documentImage, 90);
+      const result = await processDocument(rotatedImage);
+      // we should have 4 results, one for each orientation
+      expect(result.length).toBe(4);
+
+      // each result should contain these properties
+      result.forEach((r) => {
+        expect(r.confidence).toBeDefined();
+        expect(r.documents).toBeDefined();
+        expect(r.image).toBeDefined();
+        expect(r.percentages).toBeDefined();
+        expect(r.rotatedOrientation).toBeDefined();
+      });
+
+      // only one of the results should have a confidence greater than 70
+      const highConfidenceResults = result.filter((r) => r.confidence > 70);
+      // that result should should have the expected documents
+      expect(highConfidenceResults.length).toBe(1);
+      const expectedDocs = {
+        adpEarningsStatement: {
+          company: "H GREG NISSAN DELRAY LLC",
+          employeeName: "ASHLEY STELMAN",
+          payDate: "04/28/2023",
+          earnings: "3,286.78",
+          netPay: "2,921.82",
+        },
+        w2: {
+          wagesTipsOthers: "3,286.78",
+        },
+      };
+
+      expect(highConfidenceResults[0].documents).toEqual(expectedDocs);
+
+      // expect all other results to have a confidence less than 70
+      const lowConfidenceResults = result.filter((r) => r.confidence < 70);
+      expect(lowConfidenceResults.length).toBe(3);
+
+      // expect all other results to have empty documents
+      lowConfidenceResults.forEach((r) => {
+        expect(r.documents.w2).toEqual({});
+        expect(r.documents.adpEarningsStatement).toEqual({});
+      });
+    },
+    {
+      timeout: 25000,
+      only: true,
     }
-  }, {timeout: 30000});
+  );
 });
