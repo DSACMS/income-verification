@@ -1,4 +1,19 @@
+// document parsers
+import {
+  type ADPPatterns,
+  adpEarningsStatement,
+} from "@/service/ocr/document/adpEarningsStatement";
+import { type W2FormPatterns, w2Form } from "@/service/ocr/document/w2";
+
+import { type DocumentMatcher } from ".";
 import { logger as ocrLogger } from ".";
+
+export const parsers = {
+  adpEarningsStatement: adpEarningsStatement,
+  w2: w2Form,
+};
+
+export type ParserKeys = "adpEarningsStatement" | "w2" | string;
 
 export type EmployerData = {
   employerIdentificationNumber: string;
@@ -12,67 +27,43 @@ export type ParsedData = {
   ssn: string;
   bottomLines: string;
 };
+export type ParsingPatterns = ADPPatterns | W2FormPatterns;
 
-export const parseEarningsStatement = (
-  text: string,
+export type ParsingFunctionResult = Record<ParserKeys, Record<string, string>>;
+
+export type ParsingFunction = (
+  documentText: string,
+  patterns: DocumentMatcher<ParserKeys, ParsingPatterns>[],
   logger: typeof ocrLogger
-): Partial<EmployerData> => {
-  logger.info("Parsing earnings statement");
+) => ParsingFunctionResult;
 
-  const results = {} as Partial<EmployerData>;
+export const parse: ParsingFunction = (
+  documentText,
+  documentMatchers,
+  logger
+): ParsingFunctionResult => {
+  logger.info("Parsing OCR Data");
 
-  // a variable (a map) to store the regex and field name to be used in the loop
-  const patterns = {
-    company: /(H GREG NISSAN DELRAY LLC)/,
-    employeeName: /(\bASHLEY STELMAN\b)/,
-    employeeAddress: /(1306 HELLIWELL ST NW\s*PALM BAY FL 32907)/,
-    payPeriod:
-      /Period Starting:\s*(\d{2}\/\d{2}\/\d{4})\s*Period Ending:\s*(\d{2}\/\d{2}\/\d{4})/,
-    payDate: /Pay Date:\s*(\d{2}\/\d{2}\/\d{4})/,
-    earnings: /Regular\s*([\d,.]+)\s*([\d,.]+)/,
-    deductions:
-      /Federal Income Tax\s*-([\d,.]+)\s*-([\d,.]+)\s*Social Security Tax\s*-([\d,.]+)\s*-([\d,.]+)\s*Medicare Tax\s*-([\d,.]+)\s*-([\d,.]+)\s*State Income Tax\s*-([\d,.]+)\s*-([\d,.]+)/,
-    netPay: /Net Pay\s*\$([\d,.]+)/,
-  };
+  const documentMatches = documentMatchers.reduce(
+    (
+      acc: ParsingFunctionResult,
+      matcher: DocumentMatcher<ParserKeys, Record<string, RegExp>>
+    ) => {
+      const { id, patterns } = matcher;
+      acc[id] = acc[id] || {}; // Ensure the key exists
 
-  // iterate through the patterns and log the attempt and result.
-  for (const [label, pattern] of Object.entries(patterns)) {
-    logger.info(`Matching ${label}`);
-    const match = text.match(pattern);
+      for (const [key, pattern] of Object.entries(patterns)) {
+        const match = documentText.match(pattern);
+        if (match && match[1]) {
+          acc[id][key] = match[1]; // Assign the string match to the result object
+        }
+        logger.info(`${key}: ${match && match[1] ? match[1] : "null"}`);
+      }
 
-    if (match) {
-      logger.info(label, match[1]);
-      results[label as keyof EmployerData] = match[1];
-    }
-
-    logger.info(label, match ? match[1] : "null");
-  }
-
-  return results;
-};
-
-export const parseW2Data = (outputText: string): ParsedData => {
-  const employerInfoPattern =
-    /\b(\d{2}-\d{7})\s+(\d+,\d+\.\d{2}|\d+\.\d{2})\s+(\d+,\d+\.\d{2}|\d+\.\d{2})/;
-  const employerMatch = outputText.match(employerInfoPattern);
-
-  const employeeAddressPattern = /Shawn Bailey\s*(.*?)\s*\d{3}-\d{2}-\d{4}/;
-  const employeeAddressMatch = outputText.match(employeeAddressPattern);
-
-  const ssnPattern = /\b\d{3}-\d{2}-\d{4}\b/;
-  const ssnMatches = outputText.match(ssnPattern);
-
-  const bottomLinesPattern = /(Form W-2 Statement[\s\S]*?)$/;
-  const bottomLinesMatch = outputText.match(bottomLinesPattern);
-
-  return {
-    employer: {
-      employerIdentificationNumber: employerMatch ? employerMatch[1] : "",
-      wagesTipsOthers: employerMatch ? employerMatch[2] : "",
-      federalIncomeTaxWithheld: employerMatch ? employerMatch[3] : "",
+      return acc;
     },
-    employeeAddress: employeeAddressMatch ? employeeAddressMatch[1].trim() : "",
-    ssn: ssnMatches && ssnMatches.length > 0 ? ssnMatches[0] : "",
-    bottomLines: bottomLinesMatch ? bottomLinesMatch[1].trim() : "",
-  };
+    {} as ParsingFunctionResult
+  );
+
+  return documentMatches;
 };
