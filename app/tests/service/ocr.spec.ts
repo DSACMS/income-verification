@@ -6,7 +6,7 @@ import { rotateDocumentImage } from "@/utils/document";
 import path from "path";
 import { describe, expect, it } from "vitest";
 
-const { getTextFromImagePath, process, processDocument } = ocr;
+const { getTextFromDocument, process, processDocument } = ocr;
 const adpEarningsStatementPatterns = adpEarningsStatement.patterns;
 const logger = createLogger("ocr-parser");
 
@@ -99,7 +99,7 @@ describe("parseOcrResult", () => {
       "../fixture/adp-earnings-statement1.jpeg"
     );
     const documentImage = await createDocumentImage(testDocumentPath);
-    const { text } = await getTextFromImagePath(documentImage, {
+    const { text } = await getTextFromDocument(documentImage, {
       debug: true,
     });
     const result = parseOcrResult(text, documentMatchers, logger);

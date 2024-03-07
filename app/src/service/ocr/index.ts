@@ -44,7 +44,7 @@ export const logger = createLogger("ocr-parser", {
   },
 });
 
-const getTextFromImagePath = async (
+const getTextFromDocument = async (
   document: DocumentImage,
   opts: OcrOptions
 ) => {
@@ -93,7 +93,7 @@ const processDocument = async (
 const process = async (
   document: DocumentImage
 ): Promise<ProcessedImageResult> => {
-  const { text, confidence } = await getTextFromImagePath(document, {
+  const { text, confidence } = await getTextFromDocument(document, {
     debug: true,
   });
   const parsersArray = Object.values(parsers);
@@ -132,7 +132,7 @@ const ocrService = {
   process,
   processDocument,
   logger,
-  getTextFromImagePath,
+  getTextFromDocument,
 };
 
 export default ocrService;
