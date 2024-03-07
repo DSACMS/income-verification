@@ -2,11 +2,14 @@ import { createDocumentImage, createLogger } from "@/service/factories";
 import ocr, { DocumentMatcher } from "@/service/ocr";
 import { adpEarningsStatement } from "@/service/ocr/document/adpEarningsStatement";
 import { parseOcrResult } from "@/service/ocr/parser";
-import { rotateDocumentImage } from "@/utils/document";
+import {
+  getTextFromDocumentImage,
+  rotateDocumentImage,
+} from "@/utils/document";
 import path from "path";
 import { describe, expect, it } from "vitest";
 
-const { getTextFromDocument, process, processDocument } = ocr;
+const { process, processDocument } = ocr;
 const adpEarningsStatementPatterns = adpEarningsStatement.patterns;
 const logger = createLogger("ocr-parser");
 
@@ -99,8 +102,9 @@ describe("parseOcrResult", () => {
       "../fixture/adp-earnings-statement1.jpeg"
     );
     const documentImage = await createDocumentImage(testDocumentPath);
-    const { text } = await getTextFromDocument(documentImage, {
+    const { text } = await getTextFromDocumentImage(documentImage, {
       debug: true,
+      logger,
     });
     const result = parseOcrResult(text, documentMatchers, logger);
     const expected = {

@@ -1,4 +1,6 @@
+import { OcrOptions, logger } from "@/service/ocr";
 import sharp from "sharp";
+import { createWorker } from "tesseract.js";
 
 export type DocumentOrientation = 0 | 90 | 180 | 270;
 
@@ -34,4 +36,26 @@ export const rotateDocumentImage = async (
     textOrientation: nextOrientation,
     data: rotatedImageData,
   };
+};
+
+export const getTextFromDocumentImage = async (
+  document: DocumentImage,
+  opts: OcrOptions
+) => {
+  const worker = await createWorker("eng", 1, {
+    logger: opts.debug ? (message) => logger.debug(message) : undefined,
+  });
+
+  const result = await worker.recognize(document.data, {
+    rotateAuto: true,
+  });
+
+  const output = {
+    text: result.data.text,
+    confidence: result.data.confidence,
+  };
+
+  await worker.terminate();
+
+  return output;
 };
