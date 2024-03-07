@@ -1,4 +1,4 @@
-import { createLogger } from "@/service/factory";
+import { createLogger } from "@/service/factories";
 import { type ParserKeys, parseOcrResult, parsers } from "@/service/ocr/parser";
 import {
   DocumentImage,

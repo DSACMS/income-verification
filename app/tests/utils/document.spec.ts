@@ -1,4 +1,4 @@
-import { createDocumentImage } from "@/service/factory";
+import { createDocumentImage } from "@/service/factories";
 import {
   type DocumentImage,
   orientations,

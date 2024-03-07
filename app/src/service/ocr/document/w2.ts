@@ -1,4 +1,4 @@
-import { createDocumentMatcher } from "@/service/factory";
+import { createDocumentMatcher } from "@/service/factories";
 
 export const w2Form = createDocumentMatcher("W2 Form", "w2", {
   employerIdentificationNumber: /\b(\d{2}-\d{7})/,

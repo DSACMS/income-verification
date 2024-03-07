@@ -1,4 +1,4 @@
-import { createDocumentMatcher } from "@/service/factory";
+import { createDocumentMatcher } from "@/service/factories";
 
 export const adpEarningsStatement = createDocumentMatcher(
   "ADP Earnings Statement",

@@ -1,4 +1,4 @@
-import { createDocumentImage, createLogger } from "@/service/factory";
+import { createDocumentImage, createLogger } from "@/service/factories";
 import ocr, { DocumentMatcher } from "@/service/ocr";
 import { adpEarningsStatement } from "@/service/ocr/document/adpEarningsStatement";
 import { parseOcrResult } from "@/service/ocr/parser";
