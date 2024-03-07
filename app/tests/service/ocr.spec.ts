@@ -1,7 +1,7 @@
 import { createDocumentImage, createLogger } from "@/service/factories";
 import ocr, { DocumentMatcher } from "@/service/ocr";
 import { adpEarningsStatement } from "@/service/ocr/document/adpEarningsStatement";
-import { parseOcrResult } from "@/service/ocr/parser";
+import { parse } from "@/service/ocr/parser";
 import {
   getTextFromDocumentImage,
   rotateDocumentImage,
@@ -48,7 +48,7 @@ describe("parseOcrResult", () => {
       },
     };
 
-    const result = parseOcrResult(documentText, documentMatchers, logger);
+    const result = parse(documentText, documentMatchers, logger);
 
     // Assert the result matches the expected output
     expect(result).toEqual(expected);
@@ -74,7 +74,7 @@ describe("parseOcrResult", () => {
       },
     };
 
-    const result = parseOcrResult(documentText, documentMatchers, logger);
+    const result = parse(documentText, documentMatchers, logger);
 
     // Assert the result matches the expected output
     expect(result).toEqual(expected);
@@ -90,7 +90,7 @@ describe("parseOcrResult", () => {
     const expected = {
       testDocument: {},
     };
-    const result = parseOcrResult(documentText, documentMatchers, logger);
+    const result = parse(documentText, documentMatchers, logger);
 
     // Assert the result is an empty object for no matches
     expect(result).toEqual(expected);
@@ -106,7 +106,7 @@ describe("parseOcrResult", () => {
       debug: true,
       logger,
     });
-    const result = parseOcrResult(text, documentMatchers, logger);
+    const result = parse(text, documentMatchers, logger);
     const expected = {
       testDocument: {
         company: "H GREG NISSAN DELRAY LLC",

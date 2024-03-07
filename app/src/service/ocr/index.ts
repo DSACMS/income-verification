@@ -1,5 +1,5 @@
 import { createLogger } from "@/service/factories";
-import { type ParserKeys, parseOcrResult, parsers } from "@/service/ocr/parser";
+import { type ParserKeys, parse, parsers } from "@/service/ocr/parser";
 import {
   DocumentImage,
   DocumentOrientation,
@@ -23,7 +23,7 @@ export type OcrOptions = {
 };
 
 export type ProcessedImageResult = {
-  documents: ReturnType<typeof parseOcrResult>;
+  documents: ReturnType<typeof parse>;
   image: DocumentImage;
   percentages: Record<ParserKeys, number>;
   confidence: number;
@@ -77,7 +77,7 @@ const process = async (
     logger,
   });
   const parsersArray = Object.values(parsers);
-  const docs = parseOcrResult(text, parsersArray, logger);
+  const docs = parse(text, parsersArray, logger);
 
   // let's keep track of the number of matched fields per parser
   const percentages: Record<string, number> = {};

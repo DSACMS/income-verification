@@ -37,7 +37,7 @@ export type ParsingFunction = (
   logger: typeof ocrLogger
 ) => ParsingFunctionResult;
 
-export const parseOcrResult: ParsingFunction = (
+export const parse: ParsingFunction = (
   documentText,
   documentMatchers,
   logger
