@@ -197,8 +197,7 @@ describe("processDocument", () => {
       });
     },
     {
-      timeout: 25000,
-      only: true,
+      timeout: 15000,
     }
   );
 });
