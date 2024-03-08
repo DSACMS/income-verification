@@ -128,4 +128,33 @@ describe("File Upload API Endpoint", () => {
       timeout: 10000,
     }
   );
+
+  it(
+    "should default to the ocr algorithm if no engine is specified",
+    async () => {
+      const { req, res } = createMocks({
+        method: "POST",
+      });
+
+      // Do some type casting to make TS happy since we don't mock the entire req and res objects
+      const nextReq = req as unknown as NextApiRequest;
+      const nextRes = res as unknown as NextApiResponse;
+
+      await handler(nextReq, nextRes);
+      const responseData = res._getJSONData() as ResponseData & {
+        results: OCRDectionResponse;
+      };
+
+      expect(res._getStatusCode()).toBe(200);
+      expect(res._getJSONData()).toHaveProperty("message", "Success!");
+
+      expect(responseData.results.fulfilled.length).toBe(1);
+      const result = responseData.results.fulfilled[0];
+
+      assertAdpEarningsStatement(result);
+    },
+    {
+      timeout: 10000,
+    }
+  );
 });

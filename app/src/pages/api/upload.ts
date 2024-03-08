@@ -143,11 +143,14 @@ export default async function handler(
   if (req.method === "POST") {
     const form = formidable({});
     const [, files] = await form.parse(req);
+    let engine = "ocr";
 
     // get the document processor we'd like to use from the query string
-    const { engine } = req.query ?? "ocr";
+    if (req.query.engine) {
+      engine = req.query.engine as string;
+    }
 
-    if (!engine || Array.isArray(engine) || !engines.includes(engine)) {
+    if (!engines.includes(engine)) {
       res.status(400).json({
         message: "Engine not supported",
       });
