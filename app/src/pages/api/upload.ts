@@ -17,9 +17,19 @@ type BlurryDetectorResults = Array<{
 
 type Files = formidable.Files<string>;
 
+type OCRDetectionResult = {
+  file: formidable.File;
+  data: ProcessedRotatedImagesResult;
+};
+
+export type OCRDectionResponse = {
+  fulfilled: ProcessedRotatedImagesResult[];
+  rejected: unknown[];
+};
+
 export type ResponseData = {
   message: string;
-  results?: BlurryDetectorResults;
+  results?: BlurryDetectorResults | OCRDectionResponse;
 };
 
 export const config = {
@@ -36,25 +46,6 @@ const { processDocument } = OCR;
 // https://www.linkedin.com/pulse/pinpointing-blurry-images-simple-nodejs-way-pablo-schaffner-bofill/
 const slightBlurDetector = new BlurryDetector(300);
 
-const ocrDetectionAction = async (
-  files: Files
-): Promise<ProcessedRotatedImagesResult[]> => {
-  const results = await Promise.allSettled(
-    Object.values(files).map(async (filelist = []) => {
-      const [file] = filelist;
-      if (file) {
-        const saveTo = path.join(os.tmpdir(), file.originalFilename || "");
-        fs.writeFileSync(saveTo, fs.readFileSync(file.filepath));
-        const document = await createDocumentImage(saveTo);
-        const processed = await processDocument(document);
-        return processed;
-      }
-    })
-  );
-
-  return results;
-};
-
 const blurDectionAction = async (files: Files) => {
   const results: BlurryDetectorResults = await Promise.allSettled(
     Object.values(files).map(async (filelist = []) => {
@@ -65,8 +56,7 @@ const blurDectionAction = async (files: Files) => {
         const result = await slightBlurDetector.analyse(saveTo);
 
         console.log(
-          `File [${saveTo}] is blurry? ${result.isBlurry ? "yes" : "no"} with ${
-            result.score
+          `File [${saveTo}] is blurry? ${result.isBlurry ? "yes" : "no"} with ${result.score
           }`
         );
 
@@ -81,6 +71,67 @@ const blurDectionAction = async (files: Files) => {
   );
 
   return results;
+};
+
+const ocrDetectionAction = async (
+  files: Files
+): Promise<{
+  fulfilled: ProcessedRotatedImagesResult[];
+  rejected: unknown[];
+}> => {
+
+  const results = await Promise.allSettled(
+    Object.values(files).map(async (filelist = []) => {
+      const [file] = filelist;
+      const saveTo = path.join(os.tmpdir(), file.originalFilename || "");
+      fs.writeFileSync(saveTo, fs.readFileSync(file.filepath));
+      const document = await createDocumentImage(saveTo);
+      const processed = await processDocument(document);
+      const result = {
+        file: file,
+        data: processed,
+      };
+
+      return result;
+    })
+  ) as PromiseSettledResult<{
+    status: 'fulfilled' | 'rejected';
+    value?: OCRDetectionResult;
+    reason?: unknown;
+}>[];
+
+  // it is possible have files that have been rejected or fulfilled
+  // rejection reasons include, but are not limited to
+  // - the file is not an image
+  // - the file is too large
+  // - the file is corrupt
+  // - the file is not found
+
+  const fulfilledFiles = results.filter(
+    (result) => result.status === "fulfilled"
+  ) as unknown as {status: 'fulfilled', value: OCRDetectionResult}[];
+
+  const rejectedFiles = results.filter( (result) => result.status === "rejected"
+  ) as unknown as  PromiseRejectedResult[];
+
+  const fulfilled = fulfilledFiles.map((result) => {
+    // don't send the image data to the client
+    result.value.data.map((doc) => {
+      delete doc.image;
+      return doc;
+    });
+    return result.value.data;
+  });
+
+  const rejected = rejectedFiles.map((result) => {
+    return result.reason as unknown;
+  });
+
+  return {
+    fulfilled,
+    rejected,
+  }
+
 };
 
 export default async function handler(

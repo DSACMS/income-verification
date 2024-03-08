@@ -1,6 +1,5 @@
-import handler from "@/pages/api/upload";
+import handler, { ResponseData } from "@/pages/api/upload";
 import { createDocumentImage } from "@/service/factories";
-import { ProcessedRotatedImagesResult } from "@/service/ocr";
 import { type DocumentImage } from "@/utils/document";
 import { assertAdpEarningsStatement } from "@test/assertions/adpEarningsStatement";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -62,24 +61,14 @@ describe("File Upload API Endpoint", () => {
       const nextRes = res as unknown as NextApiResponse;
 
       await handler(nextReq, nextRes);
-      const responseData = res._getJSONData() as {
-        results:
-          | { status: string; value: ProcessedRotatedImagesResult }
-          | { status: string; reason: unknown }[];
-      };
+      const responseData = res._getJSONData() as ResponseData;
 
       expect(res._getStatusCode()).toBe(200);
       expect(res._getJSONData()).toHaveProperty("message", "Success!");
 
-      // get the files with a status of "fulfilled"
-      const fulfilledResults = (responseData.results as []).filter(
-        (result: { status: string; value: ProcessedRotatedImagesResult }) =>
-          result.status === "fulfilled"
-      ) as { status: string; value: ProcessedRotatedImagesResult }[];
 
-      // expect only 1 fulfilled result
-      expect(fulfilledResults.length).toBe(1);
-      const result = fulfilledResults[0].value;
+      expect(responseData.results.fulfilled.length).toBe(1);
+      const result = responseData.results.fulfilled[0];
       assertAdpEarningsStatement(result);
     },
     {

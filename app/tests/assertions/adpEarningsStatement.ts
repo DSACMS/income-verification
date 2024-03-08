@@ -14,7 +14,7 @@ export const assertAdpEarningsStatement = (
   result.forEach((r) => {
     expect(r.confidence).toBeDefined();
     expect(r.documents).toBeDefined();
-    expect(r.image).toBeDefined();
+    // expect(r.image).toBeDefined();
     expect(r.percentages).toBeDefined();
     expect(r.rotatedOrientation).toBeDefined();
   });
