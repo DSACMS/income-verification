@@ -10,7 +10,11 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 let testDocument: DocumentImage;
 
-// Mock `formidable` correctly as a function
+/**
+ * Mock the `formidable` package (called in the handler) to simulate file uploads
+ * this way we don't need to wrestle with the request object
+ * and attempt to simulate file uploads
+ */
 vi.mock("formidable", () => {
   return {
     // Mock the default export to be a function that returns an instance with a `parse` method
