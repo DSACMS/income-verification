@@ -1,6 +1,54 @@
 {
     "version": "0.2.0",
     "configurations": [
+      {
+        "name": "Attach by Process ID",
+        "processId": "${command:PickProcess}",
+        "cwd": "${workspaceFolder}/app",
+        "request": "attach",
+        "skipFiles": [
+          "<node_internals>/**"
+        ],
+        "type": "node"
+      },
+      {
+        "name": "Next.js: debug server-side",
+        "cwd": "${workspaceFolder}/app",
+        "type": "node-terminal",
+        "request": "launch",
+        "command": "npm run dev",
+        "skipFiles": [
+          "<node_internals>/**",
+          "**/node_modules/**"
+        ],
+      },
+      {
+        "name": "Next.js: debug client-side",
+        "cwd": "${workspaceFolder}/app",
+        "type": "chrome",
+        "request": "launch",
+        "url": "http://localhost:3000",
+        "skipFiles": [
+          "<node_internals>/**",
+          "**/node_modules/**"
+        ],
+      },
+      {
+        "name": "Next.js: debug full stack",
+        "cwd": "${workspaceFolder}/app",
+        "type": "node-terminal",
+        "request": "launch",
+        "command": "npm run dev",
+        "serverReadyAction": {
+          "pattern": "- Local:.+(https?://.+)",
+          "uriFormat": "%s",
+          "action": "debugWithChrome"
+        },
+        "skipFiles": [
+          "<node_internals>/**",
+          "**/node_modules/**"
+        ],
+      },
         {
             "name": "Test",
             "type": "node-terminal",

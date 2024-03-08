@@ -7,20 +7,93 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import Layout from "src/components/Layout";
 
-import type { BlurryDetectorResults, ResponseData } from "../api/upload";
+import type {
+  BlurryDetectorResults,
+  OCRDectionResponse,
+  ResponseData,
+} from "../api/upload";
 
-type ParsedBlurDetectorResults = ResponseData & {
-  results?: BlurryDetectorResults;
+type ParsedBlurDecetorResults = ResponseData & {
+  results: BlurryDetectorResults;
+};
+
+const renderBlurDetectorResults = (
+  results: ResponseData & {
+    results: BlurryDetectorResults;
+  }
+) => {
+  return (
+    <ul>
+      {results?.results?.map((result, idx) => (
+        <li key={idx}>
+          {result.value && (
+            <>
+              {result.value.imagePath}:{""}
+              {result.value.isBlurry ? "blurry!" : "sharp"} (
+              {result.value.score})
+            </>
+          )}
+          {result.reason && (
+            <>
+              {result.reason.imagePath}:{""}
+              {result.reason.isBlurry ? "blurry!" : "sharp"} (
+              {result.reason.score})
+            </>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+const renderOcrResults = (results: OCRDectionResponse) => {
+  const elements = results.fulfilled.map((documentResults, index) => {
+    // get the orientation with the highest confidence
+    const highestConfidenceScore = Math.max(...documentResults.map((doc) => doc.confidence));
+    const highestConfidenceOrientation = documentResults.filter(
+      (doc) => doc.confidence ===highestConfidenceScore)[0];
+    const docFields = highestConfidenceOrientation.documents;
+    
+    return (
+      <div key={`document-${index}`}>
+        <h3>Document {index + 1}</h3>
+        <p>
+          <strong>Confidence:</strong> {highestConfidenceOrientation.confidence}
+        </p>
+        <p>
+          <strong>Rotation:</strong>{" "}
+          {highestConfidenceOrientation.rotatedOrientation}
+        </p>
+        {JSON.stringify(docFields, null, 2)}
+      </div>
+    );
+  });
+
+  return <div>{elements}</div>;
 };
 
 const Confirmation: NextPage = () => {
   const router = useRouter();
   const results = router.query?.results;
-  let parsedResults: ParsedBlurDetectorResults = { message: "" };
 
-  if (results) {
-    parsedResults = JSON.parse(results.toString()) as ParsedBlurDetectorResults;
-  }
+  const renderProcessingResults = (results?: string) => {
+    if (!results) {
+      return <>Could not render results</>;
+    }
+    const parsedResults = JSON.parse(results.toString()) as ResponseData;
+    return (
+      <div>
+        {parsedResults.engine === "blur" &&
+          renderBlurDetectorResults(
+            parsedResults.results as unknown as ParsedBlurDecetorResults
+          )}
+        {parsedResults.engine === "ocr" &&
+          renderOcrResults(
+            parsedResults.results as unknown as OCRDectionResponse
+          )}
+      </div>
+    );
+  };
 
   return (
     <Layout>
@@ -33,26 +106,7 @@ const Confirmation: NextPage = () => {
         <p className="usa-intro measure-5">
           Thank you for uploading your documents. Here are the results:
         </p>
-        <ul>
-          {parsedResults?.results?.map((result, idx) => (
-            <li key={idx}>
-              {result.value && (
-                <>
-                  {result.value.imagePath}:{""}
-                  {result.value.isBlurry ? "blurry!" : "sharp"} (
-                  {result.value.score})
-                </>
-              )}
-              {result.reason && (
-                <>
-                  {result.reason.imagePath}:{""}
-                  {result.reason.isBlurry ? "blurry!" : "sharp"} (
-                  {result.reason.score})
-                </>
-              )}
-            </li>
-          ))}
-        </ul>
+        {renderProcessingResults(results ? results.toString() : undefined)}
         <ProcessList>
           <ProcessListItem>
             <ProcessListHeading type="h4">Check your email</ProcessListHeading>

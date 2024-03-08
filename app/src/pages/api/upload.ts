@@ -1,10 +1,11 @@
 import { createDocumentImage } from "@/service/factories";
-import OCR, { type ProcessedRotatedImagesResult } from "@/service/ocr";
+import OCR, { type ProcessedImageResult } from "@/service/ocr";
 import formidable from "formidable";
 import fs from "fs";
 import type { NextApiRequest, NextApiResponse } from "next";
 import os from "os";
 import path from "path";
+
 import type { BlurryDetectorReport } from "../../utils/blur-detector";
 import BlurryDetector from "../../utils/blur-detector";
 
@@ -18,17 +19,20 @@ type Files = formidable.Files<string>;
 
 type OCRDetectionResult = {
   file: formidable.File;
-  data: ProcessedRotatedImagesResult;
+  data: ProcessedImageResult;
 };
 
 export type OCRDectionResponse = {
-  fulfilled: ProcessedRotatedImagesResult[];
+  fulfilled: ProcessedImageResult[][];
   rejected: unknown[];
 };
+
+const engines = ["ocr", "blur"];
 
 export type ResponseData = {
   message: string;
   results?: BlurryDetectorResults | OCRDectionResponse;
+  engine: "ocr" | "blur" | "unknown";
 };
 
 export const config = {
@@ -75,10 +79,7 @@ const blurDectionAction = async (files: Files) => {
 
 const ocrDetectionAction = async (
   files: Files
-): Promise<{
-  fulfilled: ProcessedRotatedImagesResult[];
-  rejected: unknown[];
-}> => {
+): Promise<OCRDectionResponse> => {
   const results = (await Promise.allSettled(
     Object.values(files).map(async (filelist = []) => {
       const [file] = filelist;
@@ -133,8 +134,6 @@ const ocrDetectionAction = async (
   };
 };
 
-const engines = ["ocr", "blur"];
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
@@ -152,6 +151,7 @@ export default async function handler(
     if (!engines.includes(engine)) {
       res.status(400).json({
         message: "Engine not supported",
+        engine: "unknown",
       });
       return;
     }
@@ -162,6 +162,7 @@ export default async function handler(
       res.status(200).json({
         message: "Success!",
         results,
+        engine,
       });
     }
 
@@ -170,6 +171,7 @@ export default async function handler(
       res.status(200).json({
         message: "Success!",
         results,
+        engine,
       });
     }
   }
