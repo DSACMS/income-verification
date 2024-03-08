@@ -1,4 +1,4 @@
-import handler, { ResponseData } from "@/pages/api/upload";
+import handler, { OCRDectionResponse, ResponseData } from "@/pages/api/upload";
 import { createDocumentImage } from "@/service/factories";
 import { type DocumentImage } from "@/utils/document";
 import { assertAdpEarningsStatement } from "@test/assertions/adpEarningsStatement";
@@ -61,14 +61,16 @@ describe("File Upload API Endpoint", () => {
       const nextRes = res as unknown as NextApiResponse;
 
       await handler(nextReq, nextRes);
-      const responseData = res._getJSONData() as ResponseData;
+      const responseData = res._getJSONData() as ResponseData & {
+        results: OCRDectionResponse;
+      };
 
       expect(res._getStatusCode()).toBe(200);
       expect(res._getJSONData()).toHaveProperty("message", "Success!");
 
-
       expect(responseData.results.fulfilled.length).toBe(1);
       const result = responseData.results.fulfilled[0];
+
       assertAdpEarningsStatement(result);
     },
     {

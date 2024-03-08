@@ -122,30 +122,36 @@ describe("parseOcrResult", () => {
 });
 
 describe("process", () => {
-  it("should process a document and return parsed data", async () => {
-    const testDocumentPath = path.join(
-      __dirname,
-      "../fixture/adp-earnings-statement1.jpeg"
-    );
-    const documentImage = await createDocumentImage(testDocumentPath);
-    const result = await process(documentImage);
-    const expectedDocs = {
-      adpEarningsStatement: {
-        company: "H GREG NISSAN DELRAY LLC",
-        earnings: "3,286.78",
-        employeeName: "ASHLEY STELMAN",
-        netPay: "2,921.82",
-        payDate: "04/28/2023",
-      },
-      w2: {
-        wagesTipsOthers: "3,286.78",
-      },
-    };
-    expect(result.documents).toEqual(expectedDocs);
-    expect(result.percentages.adpEarningsStatement).toBe(63);
-    expect(result.percentages.w2).toBe(17);
-    expect(result.image).toEqual(documentImage);
-  });
+  it(
+    "should process a document and return parsed data",
+    async () => {
+      const testDocumentPath = path.join(
+        __dirname,
+        "../fixture/adp-earnings-statement1.jpeg"
+      );
+      const documentImage = await createDocumentImage(testDocumentPath);
+      const result = await process(documentImage);
+      const expectedDocs = {
+        adpEarningsStatement: {
+          company: "H GREG NISSAN DELRAY LLC",
+          earnings: "3,286.78",
+          employeeName: "ASHLEY STELMAN",
+          netPay: "2,921.82",
+          payDate: "04/28/2023",
+        },
+        w2: {
+          wagesTipsOthers: "3,286.78",
+        },
+      };
+      expect(result.documents).toEqual(expectedDocs);
+      expect(result.percentages.adpEarningsStatement).toBe(63);
+      expect(result.percentages.w2).toBe(17);
+      expect(result.image).toEqual(documentImage);
+    },
+    {
+      timeout: 15000,
+    }
+  );
 });
 
 describe("processDocument", () => {

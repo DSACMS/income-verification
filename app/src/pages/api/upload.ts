@@ -56,7 +56,8 @@ const blurDectionAction = async (files: Files) => {
         const result = await slightBlurDetector.analyse(saveTo);
 
         console.log(
-          `File [${saveTo}] is blurry? ${result.isBlurry ? "yes" : "no"} with ${result.score
+          `File [${saveTo}] is blurry? ${result.isBlurry ? "yes" : "no"} with ${
+            result.score
           }`
         );
 
@@ -79,8 +80,7 @@ const ocrDetectionAction = async (
   fulfilled: ProcessedRotatedImagesResult[];
   rejected: unknown[];
 }> => {
-
-  const results = await Promise.allSettled(
+  const results = (await Promise.allSettled(
     Object.values(files).map(async (filelist = []) => {
       const [file] = filelist;
       const saveTo = path.join(os.tmpdir(), file.originalFilename || "");
@@ -94,11 +94,11 @@ const ocrDetectionAction = async (
 
       return result;
     })
-  ) as PromiseSettledResult<{
-    status: 'fulfilled' | 'rejected';
+  )) as PromiseSettledResult<{
+    status: "fulfilled" | "rejected";
     value?: OCRDetectionResult;
     reason?: unknown;
-}>[];
+  }>[];
 
   // it is possible have files that have been rejected or fulfilled
   // rejection reasons include, but are not limited to
@@ -109,10 +109,11 @@ const ocrDetectionAction = async (
 
   const fulfilledFiles = results.filter(
     (result) => result.status === "fulfilled"
-  ) as unknown as {status: 'fulfilled', value: OCRDetectionResult}[];
+  ) as unknown as { status: "fulfilled"; value: OCRDetectionResult }[];
 
-  const rejectedFiles = results.filter( (result) => result.status === "rejected"
-  ) as unknown as  PromiseRejectedResult[];
+  const rejectedFiles = results.filter(
+    (result) => result.status === "rejected"
+  ) as unknown as PromiseRejectedResult[];
 
   const fulfilled = fulfilledFiles.map((result) => {
     // don't send the image data to the client
@@ -130,8 +131,7 @@ const ocrDetectionAction = async (
   return {
     fulfilled,
     rejected,
-  }
-
+  };
 };
 
 export default async function handler(
