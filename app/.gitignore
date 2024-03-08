@@ -7,6 +7,7 @@
 
 # testing
 /coverage
+/html
 
 # next.js
 /.next/
@@ -40,3 +41,6 @@ npm-debug.log*
 
 # uswds assets
 /public/uswds
+
+# formatting files
+eng.traineddata
