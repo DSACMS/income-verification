@@ -7,15 +7,19 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import Layout from "src/components/Layout";
 
-import type { ResponseData } from "../api/upload";
+import type { BlurryDetectorResults, ResponseData } from "../api/upload";
+
+type ParsedBlurDetectorResults = ResponseData & {
+  results?: BlurryDetectorResults;
+};
 
 const Confirmation: NextPage = () => {
   const router = useRouter();
   const results = router.query?.results;
-  let parsedResults: ResponseData = { message: "" };
+  let parsedResults: ParsedBlurDetectorResults = { message: "" };
 
   if (results) {
-    parsedResults = JSON.parse(results.toString() || "") as ResponseData;
+    parsedResults = JSON.parse(results.toString()) as ParsedBlurDetectorResults;
   }
 
   return (

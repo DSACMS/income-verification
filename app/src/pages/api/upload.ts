@@ -9,7 +9,7 @@ import path from "path";
 import type { BlurryDetectorReport } from "../../utils/blur-detector";
 import BlurryDetector from "../../utils/blur-detector";
 
-type BlurryDetectorResults = Array<{
+export type BlurryDetectorResults = Array<{
   status: "fulfilled" | "rejected";
   value?: BlurryDetectorReport;
   reason?: BlurryDetectorReport;
