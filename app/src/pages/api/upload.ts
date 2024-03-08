@@ -1,12 +1,13 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import type { BlurryDetectorReport } from "../../utils/blur-detector";
-import OCR, { type ProcessedRotatedImagesResult } from "@/service/ocr";
 import { createDocumentImage } from "@/service/factories";
-import BlurryDetector from "../../utils/blur-detector";
+import OCR, { type ProcessedRotatedImagesResult } from "@/service/ocr";
 import formidable from "formidable";
+import fs from "fs";
+import type { NextApiRequest, NextApiResponse } from "next";
 import os from "os";
 import path from "path";
-import fs from "fs";
+
+import type { BlurryDetectorReport } from "../../utils/blur-detector";
+import BlurryDetector from "../../utils/blur-detector";
 
 type BlurryDetectorResults = Array<{
   status: "fulfilled" | "rejected";
@@ -27,7 +28,7 @@ export const config = {
   },
 };
 
-const {processDocument} = OCR;
+const { processDocument } = OCR;
 
 // The threshold is based on a few articles about this approach
 // "The threshold can be set based on performance on the data we have."
@@ -35,7 +36,9 @@ const {processDocument} = OCR;
 // https://www.linkedin.com/pulse/pinpointing-blurry-images-simple-nodejs-way-pablo-schaffner-bofill/
 const slightBlurDetector = new BlurryDetector(300);
 
-const ocrDetectionAction = async (files: Files): Promise<ProcessedRotatedImagesResult[]> => {
+const ocrDetectionAction = async (
+  files: Files
+): Promise<ProcessedRotatedImagesResult[]> => {
   const results = await Promise.allSettled(
     Object.values(files).map(async (filelist = []) => {
       const [file] = filelist;
@@ -50,11 +53,11 @@ const ocrDetectionAction = async (files: Files): Promise<ProcessedRotatedImagesR
   );
 
   return results;
-}
+};
 
 const blurDectionAction = async (files: Files) => {
   const results: BlurryDetectorResults = await Promise.allSettled(
-     Object.values(files).map(async (filelist = []) => {
+    Object.values(files).map(async (filelist = []) => {
       const [file] = filelist;
       if (file) {
         const saveTo = path.join(os.tmpdir(), file.originalFilename || "");
@@ -62,9 +65,9 @@ const blurDectionAction = async (files: Files) => {
         const result = await slightBlurDetector.analyse(saveTo);
 
         console.log(
-          `File [${saveTo}] is blurry? ${
-            result.isBlurry ? "yes" : "no"
-          } with ${result.score}`
+          `File [${saveTo}] is blurry? ${result.isBlurry ? "yes" : "no"} with ${
+            result.score
+          }`
         );
 
         if (result.isBlurry) {
@@ -78,7 +81,7 @@ const blurDectionAction = async (files: Files) => {
   );
 
   return results;
-}
+};
 
 export default async function handler(
   req: NextApiRequest,
@@ -98,7 +101,7 @@ export default async function handler(
       });
     }
 
-    if(processingType === "blur") {
+    if (processingType === "blur") {
       const results = await blurDectionAction(files);
       res.status(200).json({
         message: "Success!",
