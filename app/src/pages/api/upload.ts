@@ -134,6 +134,8 @@ const ocrDetectionAction = async (
   };
 };
 
+const engines = ["ocr", "blur"];
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
@@ -141,8 +143,17 @@ export default async function handler(
   if (req.method === "POST") {
     const form = formidable({});
     const [, files] = await form.parse(req);
+
     // get the document processor we'd like to use from the query string
-    const { engine } = req.query;
+    const { engine } = req.query ?? "ocr";
+
+    if (!engine || Array.isArray(engine) || !engines.includes(engine)) {
+      res.status(400).json({
+        message: "Engine not supported",
+      });
+      return;
+    }
+
     // processing type can be ocr or blur
     if (engine === "ocr") {
       const results = await ocrDetectionAction(files);
