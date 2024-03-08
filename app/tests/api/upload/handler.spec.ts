@@ -1,6 +1,8 @@
 import handler from "@/pages/api/upload";
 import { createDocumentImage } from "@/service/factories";
+import { ProcessedRotatedImagesResult } from "@/service/ocr";
 import { type DocumentImage } from "@/utils/document";
+import { assertAdpEarningsStatement } from "@test/assertions/adpEarningsStatement";
 import { NextApiRequest, NextApiResponse } from "next";
 // Adjust the import path as necessary
 import { createMocks } from "node-mocks-http";
@@ -47,45 +49,88 @@ describe("File Upload API Endpoint", () => {
     testDocument = await createDocumentImage(testDocumentPath);
   });
 
-  it("should handle multiple file uploads", async () => {
-    const { req, res } = createMocks({
-      method: "POST",
-      query: { processingType: "blur" },
-    });
+  it(
+    "should test the ocr parser",
+    async () => {
+      const { req, res } = createMocks({
+        method: "POST",
+        query: { engine: "ocr" },
+      });
 
-    // Do some type casting to make TS happy since we don't mock the entire req and res objects
-    const nextReq = req as unknown as NextApiRequest;
-    const nextRes = res as unknown as NextApiResponse;
+      // Do some type casting to make TS happy since we don't mock the entire req and res objects
+      const nextReq = req as unknown as NextApiRequest;
+      const nextRes = res as unknown as NextApiResponse;
 
-    await handler(nextReq, nextRes);
-    const result = res._getJSONData() as unknown;
-    const expected = {
-      message: "Success!",
-      results: [
-        {
-          status: "fulfilled",
-          value: {
-            imagePath:
-              "/var/folders/g4/chfpyqbn7l74n7v9__5y4pwh0000gp/T/adp-earnings-statement1",
-            isBlurry: false,
-            score: 1125.6740445003702,
+      await handler(nextReq, nextRes);
+      const responseData = res._getJSONData() as {
+        results:
+          | { status: string; value: ProcessedRotatedImagesResult }
+          | { status: string; reason: unknown }[];
+      };
+
+      expect(res._getStatusCode()).toBe(200);
+      expect(res._getJSONData()).toHaveProperty("message", "Success!");
+
+      // get the files with a status of "fulfilled"
+      const fulfilledResults = (responseData.results as []).filter(
+        (result: { status: string; value: ProcessedRotatedImagesResult }) =>
+          result.status === "fulfilled"
+      ) as { status: string; value: ProcessedRotatedImagesResult }[];
+
+      // expect only 1 fulfilled result
+      expect(fulfilledResults.length).toBe(1);
+      const result = fulfilledResults[0].value;
+      assertAdpEarningsStatement(result);
+    },
+    {
+      timeout: 10000,
+    }
+  );
+
+  it(
+    "should test the blur algorithm",
+    async () => {
+      const { req, res } = createMocks({
+        method: "POST",
+        query: { engine: "blur" },
+      });
+
+      // Do some type casting to make TS happy since we don't mock the entire req and res objects
+      const nextReq = req as unknown as NextApiRequest;
+      const nextRes = res as unknown as NextApiResponse;
+
+      await handler(nextReq, nextRes);
+      const result = res._getJSONData() as unknown;
+      const expected = {
+        message: "Success!",
+        results: [
+          {
+            status: "fulfilled",
+            value: {
+              imagePath: expect.anything() as string,
+              isBlurry: false,
+              score: 1125.6740445003702,
+            },
           },
-        },
-        {
-          status: "rejected",
-          reason: {
-            errno: -2,
-            code: "ENOENT",
-            syscall: "open",
-            path: "/tmp/uploaded2.png", // this file definitely doesn't exist
+          {
+            status: "rejected",
+            reason: {
+              errno: -2,
+              code: "ENOENT",
+              syscall: "open",
+              path: "/tmp/uploaded2.png",
+            },
           },
-        },
-      ],
-    };
+        ],
+      };
 
-    // Check that the response status code is 200
-    expect(result).toEqual(expected);
-    expect(res._getStatusCode()).toBe(200);
-    expect(res._getJSONData()).toHaveProperty("message", "Success!");
-  });
+      // Check that the response status code is 200
+      expect(result).toEqual(expected);
+      expect(res._getStatusCode()).toBe(200);
+      expect(res._getJSONData()).toHaveProperty("message", "Success!");
+    },
+    {
+      timeout: 10000,
+    }
+  );
 });

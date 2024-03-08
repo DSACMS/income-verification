@@ -90,10 +90,10 @@ export default async function handler(
   if (req.method === "POST") {
     const form = formidable({});
     const [, files] = await form.parse(req);
-    // get the processingType from the query string
-    const { processingType } = req.query;
+    // get the document processor we'd like to use from the query string
+    const { engine } = req.query;
     // processing type can be ocr or blur
-    if (processingType === "ocr") {
+    if (engine === "ocr") {
       const results = await ocrDetectionAction(files);
       res.status(200).json({
         message: "Success!",
@@ -101,7 +101,7 @@ export default async function handler(
       });
     }
 
-    if (processingType === "blur") {
+    if (engine === "blur") {
       const results = await blurDectionAction(files);
       res.status(200).json({
         message: "Success!",
