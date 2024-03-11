@@ -19,7 +19,7 @@ type Files = formidable.Files<string>;
 
 type OCRDetectionResult = {
   file: formidable.File;
-  data: ProcessedImageResult;
+  data: ProcessedImageResult[];
 };
 
 export type OCRDectionResponse = {
@@ -87,12 +87,10 @@ const ocrDetectionAction = async (
       fs.writeFileSync(saveTo, fs.readFileSync(file.filepath));
       const document = await createDocumentImage(saveTo);
       const processed = await processDocument(document);
-      const result = {
+      return {
         file: file,
         data: processed,
       };
-
-      return result;
     })
   )) as PromiseSettledResult<{
     status: "fulfilled" | "rejected";

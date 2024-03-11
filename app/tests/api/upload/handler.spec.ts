@@ -89,6 +89,7 @@ describe("File Upload API Endpoint", () => {
     await handler(nextReq, nextRes);
     const result = res._getJSONData() as unknown;
     const expected = {
+      engine: "blur",
       message: "Success!",
       results: [
         {

@@ -1,11 +1,11 @@
-import { ProcessedRotatedImagesResult } from "@/service/ocr";
+import { ProcessedImageResult } from "@/service/ocr";
 
 /**
  * helper function to assert the results of the adp earnings statement
  * @param result
  */
 export const assertAdpEarningsStatement = (
-  result: ProcessedRotatedImagesResult
+  result: ProcessedImageResult[]
 ): void => {
   // we should have 4 results, one for each orientation
   expect(result.length).toBe(4);
