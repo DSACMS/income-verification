@@ -17,15 +17,15 @@ type ParsedBlurDecetorResults = ResponseData & {
   results: BlurryDetectorResults;
 };
 
-function formatImagePath(path: string) {
+const formatImagePath = (path: string) => {
   return (path.match("([^/]+$)") || [])[0];
-}
+};
 
-function createBlurrinessIncidatorText(isBlurry: boolean) {
+const createBlurrinessIncidatorText = (isBlurry: boolean) => {
   return isBlurry ? " is blurry." : " successfully uploaded.";
-}
+};
 
-function createBlurrinessIncidatorIcon(isBlurry: boolean) {
+const createBlurrinessIncidatorIcon = (isBlurry: boolean) => {
   return (
     <>
       <span className="usa-icon-list__icon">
@@ -46,7 +46,7 @@ function createBlurrinessIncidatorIcon(isBlurry: boolean) {
       </span>
     </>
   );
-}
+};
 
 const renderOcrResults = (results: OCRDectionResponse) => {
   const elements = results.fulfilled.map((documentResults, index) => {

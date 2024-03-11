@@ -64,27 +64,33 @@ describe("parseOcrResult", () => {
     );
   });
 
-  it("should have null values for fields that did not match a pattern", () => {
-    const documentText = `Line 1 Pattern to check for
+  it(
+    "should have null values for fields that did not match a pattern",
+    {
+      timeout: 15000,
+    },
+    () => {
+      const documentText = `Line 1 Pattern to check for
      Line 2 Pattern to check for`;
 
-    const expected = {
-      testDocument: {
-        line1: "Line 1 Pattern to check for",
-        line2: "Line 2 Pattern to check for",
-      },
-    };
+      const expected = {
+        testDocument: {
+          line1: "Line 1 Pattern to check for",
+          line2: "Line 2 Pattern to check for",
+        },
+      };
 
-    const result = parse(documentText, documentMatchers, logger);
+      const result = parse(documentText, documentMatchers, logger);
 
-    // Assert the result matches the expected output
-    expect(result).toEqual(expected);
+      // Assert the result matches the expected output
+      expect(result).toEqual(expected);
 
-    // Assert that the logger captures null values for fields without matches
-    expect(logger.info).toHaveBeenCalledWith("company: null");
-    expect(logger.info).toHaveBeenCalledWith("employeeName: null");
-    expect(logger.info).toHaveBeenCalledWith("employeeAddress: null");
-  });
+      // Assert that the logger captures null values for fields without matches
+      expect(logger.info).toHaveBeenCalledWith("company: null");
+      expect(logger.info).toHaveBeenCalledWith("employeeName: null");
+      expect(logger.info).toHaveBeenCalledWith("employeeAddress: null");
+    }
+  );
 
   it("should handle documents with no matches", () => {
     const documentText = `Unrelated text that does not match any pattern`;
@@ -122,55 +128,43 @@ describe("parseOcrResult", () => {
 });
 
 describe("process", () => {
-  it(
-    "should process a document and return parsed data",
-    async () => {
-      const testDocumentPath = path.join(
-        __dirname,
-        "../fixture/adp-earnings-statement1.jpeg"
-      );
-      const documentImage = await createDocumentImage(testDocumentPath);
-      const result = await process(documentImage);
-      const expectedDocs = {
-        adpEarningsStatement: {
-          company: "H GREG NISSAN DELRAY LLC",
-          earnings: "3,286.78",
-          employeeName: "ASHLEY STELMAN",
-          netPay: "2,921.82",
-          payDate: "04/28/2023",
-        },
-        w2: {
-          wagesTipsOthers: "3,286.78",
-        },
-      };
-      expect(result.documents).toEqual(expectedDocs);
-      expect(result.percentages.adpEarningsStatement).toBe(63);
-      expect(result.percentages.w2).toBe(17);
-      expect(result.image).toEqual(documentImage);
-    },
-    {
-      timeout: 15000,
-    }
-  );
+  it("should process a document and return parsed data", async () => {
+    const testDocumentPath = path.join(
+      __dirname,
+      "../fixture/adp-earnings-statement1.jpeg"
+    );
+    const documentImage = await createDocumentImage(testDocumentPath);
+    const result = await process(documentImage);
+    const expectedDocs = {
+      adpEarningsStatement: {
+        company: "H GREG NISSAN DELRAY LLC",
+        earnings: "3,286.78",
+        employeeName: "ASHLEY STELMAN",
+        netPay: "2,921.82",
+        payDate: "04/28/2023",
+      },
+      w2: {
+        wagesTipsOthers: "3,286.78",
+      },
+    };
+    expect(result.documents).toEqual(expectedDocs);
+    expect(result.percentages.adpEarningsStatement).toBe(63);
+    expect(result.percentages.w2).toBe(17);
+    expect(result.image).toEqual(documentImage);
+  });
 });
 
 describe("processDocument", () => {
-  it(
-    "should rotate an incorrectly oriented image and process it",
-    async () => {
-      const testDocumentPath = path.join(
-        __dirname,
-        "../fixture/adp-earnings-statement1.jpeg"
-      );
-      const documentImage = await createDocumentImage(testDocumentPath);
-      // rotate the doc by 90 degrees
-      const rotatedImage = await rotateDocumentImage(documentImage, 90);
-      const result = await processDocument(rotatedImage);
-      // assert the result
-      assertAdpEarningsStatement(result);
-    },
-    {
-      timeout: 15000,
-    }
-  );
+  it("should rotate an incorrectly oriented image and process it", async () => {
+    const testDocumentPath = path.join(
+      __dirname,
+      "../fixture/adp-earnings-statement1.jpeg"
+    );
+    const documentImage = await createDocumentImage(testDocumentPath);
+    // rotate the doc by 90 degrees
+    const rotatedImage = await rotateDocumentImage(documentImage, 90);
+    const result = await processDocument(rotatedImage);
+    // assert the result
+    assertAdpEarningsStatement(result);
+  });
 });

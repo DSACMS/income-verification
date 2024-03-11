@@ -52,109 +52,91 @@ describe("File Upload API Endpoint", () => {
     testDocument = await createDocumentImage(testDocumentPath);
   });
 
-  it(
-    "should test the ocr parser",
-    async () => {
-      const { req, res } = createMocks({
-        method: "POST",
-        query: { engine: "ocr" },
-      });
+  it("should test the ocr parser", async () => {
+    const { req, res } = createMocks({
+      method: "POST",
+      query: { engine: "ocr" },
+    });
 
-      // Do some type casting to make TS happy since we don't mock the entire req and res objects
-      const nextReq = req as unknown as NextApiRequest;
-      const nextRes = res as unknown as NextApiResponse;
+    // Do some type casting to make TS happy since we don't mock the entire req and res objects
+    const nextReq = req as unknown as NextApiRequest;
+    const nextRes = res as unknown as NextApiResponse;
 
-      await handler(nextReq, nextRes);
-      const responseData = res._getJSONData() as ResponseData & {
-        results: OCRDectionResponse;
-      };
+    await handler(nextReq, nextRes);
+    const responseData = res._getJSONData() as ResponseData & {
+      results: OCRDectionResponse;
+    };
 
-      expect(res._getStatusCode()).toBe(200);
-      expect(res._getJSONData()).toHaveProperty("message", "Success!");
+    expect(res._getStatusCode()).toBe(200);
+    expect(res._getJSONData()).toHaveProperty("message", "Success!");
 
-      expect(responseData.results.fulfilled.length).toBe(1);
-      const result = responseData.results.fulfilled[0];
+    expect(responseData.results.fulfilled.length).toBe(1);
+    const result = responseData.results.fulfilled[0];
 
-      assertAdpEarningsStatement(result);
-    },
-    {
-      timeout: 10000,
-    }
-  );
+    assertAdpEarningsStatement(result);
+  });
 
-  it(
-    "should test the blur algorithm",
-    async () => {
-      const { req, res } = createMocks({
-        method: "POST",
-        query: { engine: "blur" },
-      });
+  it("should test the blur algorithm", async () => {
+    const { req, res } = createMocks({
+      method: "POST",
+      query: { engine: "blur" },
+    });
 
-      // Do some type casting to make TS happy since we don't mock the entire req and res objects
-      const nextReq = req as unknown as NextApiRequest;
-      const nextRes = res as unknown as NextApiResponse;
+    // Do some type casting to make TS happy since we don't mock the entire req and res objects
+    const nextReq = req as unknown as NextApiRequest;
+    const nextRes = res as unknown as NextApiResponse;
 
-      await handler(nextReq, nextRes);
-      const result = res._getJSONData() as unknown;
-      const expected = {
-        message: "Success!",
-        results: [
-          {
-            status: "fulfilled",
-            value: {
-              imagePath: expect.anything() as string,
-              isBlurry: false,
-              score: 1125.6740445003702,
-            },
+    await handler(nextReq, nextRes);
+    const result = res._getJSONData() as unknown;
+    const expected = {
+      message: "Success!",
+      results: [
+        {
+          status: "fulfilled",
+          value: {
+            imagePath: expect.anything() as string,
+            isBlurry: false,
+            score: 1125.6740445003702,
           },
-          {
-            status: "rejected",
-            reason: {
-              errno: -2,
-              code: "ENOENT",
-              syscall: "open",
-              path: "/tmp/uploaded2.png",
-            },
+        },
+        {
+          status: "rejected",
+          reason: {
+            errno: -2,
+            code: "ENOENT",
+            syscall: "open",
+            path: "/tmp/uploaded2.png",
           },
-        ],
-      };
+        },
+      ],
+    };
 
-      // Check that the response status code is 200
-      expect(result).toEqual(expected);
-      expect(res._getStatusCode()).toBe(200);
-      expect(res._getJSONData()).toHaveProperty("message", "Success!");
-    },
-    {
-      timeout: 10000,
-    }
-  );
+    // Check that the response status code is 200
+    expect(result).toEqual(expected);
+    expect(res._getStatusCode()).toBe(200);
+    expect(res._getJSONData()).toHaveProperty("message", "Success!");
+  });
 
-  it(
-    "should default to the ocr algorithm if no engine is specified",
-    async () => {
-      const { req, res } = createMocks({
-        method: "POST",
-      });
+  it("should default to the ocr algorithm if no engine is specified", async () => {
+    const { req, res } = createMocks({
+      method: "POST",
+    });
 
-      // Do some type casting to make TS happy since we don't mock the entire req and res objects
-      const nextReq = req as unknown as NextApiRequest;
-      const nextRes = res as unknown as NextApiResponse;
+    // Do some type casting to make TS happy since we don't mock the entire req and res objects
+    const nextReq = req as unknown as NextApiRequest;
+    const nextRes = res as unknown as NextApiResponse;
 
-      await handler(nextReq, nextRes);
-      const responseData = res._getJSONData() as ResponseData & {
-        results: OCRDectionResponse;
-      };
+    await handler(nextReq, nextRes);
+    const responseData = res._getJSONData() as ResponseData & {
+      results: OCRDectionResponse;
+    };
 
-      expect(res._getStatusCode()).toBe(200);
-      expect(res._getJSONData()).toHaveProperty("message", "Success!");
+    expect(res._getStatusCode()).toBe(200);
+    expect(res._getJSONData()).toHaveProperty("message", "Success!");
 
-      expect(responseData.results.fulfilled.length).toBe(1);
-      const result = responseData.results.fulfilled[0];
+    expect(responseData.results.fulfilled.length).toBe(1);
+    const result = responseData.results.fulfilled[0];
 
-      assertAdpEarningsStatement(result);
-    },
-    {
-      timeout: 10000,
-    }
-  );
+    assertAdpEarningsStatement(result);
+  });
 });
