@@ -104,7 +104,7 @@ const Home = (props: { onSubmit?: () => void }) => {
         body.append(file.name, file);
       });
 
-      fetch("/api/upload?engine=blur", {
+      fetch(`/api/upload?engine=${selectedEngine}`, {
         method: "POST",
         body,
       })
