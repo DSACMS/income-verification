@@ -19,6 +19,11 @@ const FILE_TYPES = [
   { label: "TIFF", mimetype: "image/tiff" },
 ];
 
+const ENGINE_OPTIONS = [
+  { value: "ocr", label: "OCR (Optical Character Recognition)" },
+  { value: "blur", label: "Blur" },
+];
+
 const list = new Intl.ListFormat("en", { type: "disjunction" });
 // TODO: This limit was chosen arbitrarily; once this is no longer a demo,
 // we should choose a limit that is based on actual system restrictions.
@@ -32,6 +37,9 @@ const formatter = new Intl.NumberFormat("en", {
 const Home = (props: { onSubmit?: () => void }) => {
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const [disableSubmit, setDisableSubmit] = useState<boolean>(false);
+  const [selectedEngine, setSelectedEngine] = useState<string>(
+    ENGINE_OPTIONS[0].value
+  );
   const router = useRouter();
 
   // https://github.com/trussworks/react-uswds/issues/2399
@@ -69,6 +77,10 @@ const Home = (props: { onSubmit?: () => void }) => {
     setErrorMessages(errors);
   };
 
+  const onEngineChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedEngine(event.target.value);
+  };
+
   const onSubmit = (e: SyntheticEvent): void => {
     e.preventDefault();
 
@@ -79,7 +91,9 @@ const Home = (props: { onSubmit?: () => void }) => {
 
     const target = e.target as typeof e.target & {
       fileInputMultiple: { files: FileList };
+      engineSelect: { value: string };
     };
+
     const fileInput = target.fileInputMultiple;
 
     if (fileInput) {
@@ -90,7 +104,7 @@ const Home = (props: { onSubmit?: () => void }) => {
         body.append(file.name, file);
       });
 
-      fetch("/api/upload/", {
+      fetch("/api/upload?engine=blur", {
         method: "POST",
         body,
       })
@@ -142,7 +156,25 @@ const Home = (props: { onSubmit?: () => void }) => {
             onChange={onFileChange}
             multiple
           />
-
+          <Label
+            htmlFor="engineSelect"
+            className="text-bold mobile-lg:font-body-lg margin-top-2"
+          >
+            Select engine
+          </Label>
+          <select
+            className="usa-select"
+            id="engineSelect"
+            name="engineSelect"
+            onChange={onEngineChange}
+            value={selectedEngine}
+          >
+            {ENGINE_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
           <Accordion
             className="maxw-tablet margin-y-2"
             bordered

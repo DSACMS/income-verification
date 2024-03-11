@@ -77,11 +77,13 @@ const renderOcrResults = (results: OCRDectionResponse) => {
   return <div>{elements}</div>;
 };
 
-const renderBlurDetectorResults = (results: ParsedBlurDecetorResults) => {
+const renderBlurDetectorResults = (
+  results: ParsedBlurDecetorResults["results"]
+) => {
   return (
     <div>
       <IconList className="padding-2 word-break-all">
-        {results?.results?.map((result, idx) => (
+        {results?.map((result, idx) => (
           <IconListItem key={idx} className="usa-icon-list__item">
             {result.value && (
               <>
@@ -123,7 +125,7 @@ const Confirmation: NextPage = () => {
       <div>
         {parsedResults.engine === "blur" &&
           renderBlurDetectorResults(
-            parsedResults.results as unknown as ParsedBlurDecetorResults
+            parsedResults.results as unknown as ParsedBlurDecetorResults["results"]
           )}
         {parsedResults.engine === "ocr" &&
           renderOcrResults(
