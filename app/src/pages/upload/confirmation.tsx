@@ -51,11 +51,14 @@ function createBlurrinessIncidatorIcon(isBlurry: boolean) {
 const renderOcrResults = (results: OCRDectionResponse) => {
   const elements = results.fulfilled.map((documentResults, index) => {
     // get the orientation with the highest confidence
-    const highestConfidenceScore = Math.max(...documentResults.map((doc) => doc.confidence));
+    const highestConfidenceScore = Math.max(
+      ...documentResults.map((doc) => doc.confidence)
+    );
     const highestConfidenceOrientation = documentResults.filter(
-      (doc) => doc.confidence ===highestConfidenceScore)[0];
+      (doc) => doc.confidence === highestConfidenceScore
+    )[0];
     const docFields = highestConfidenceOrientation.documents;
-    
+
     return (
       <div key={`document-${index}`}>
         <h3>Document {index + 1}</h3>
@@ -76,35 +79,36 @@ const renderOcrResults = (results: OCRDectionResponse) => {
 
 const renderBlurDetectorResults = (results: ParsedBlurDecetorResults) => {
   return (
-      <div>
-  <IconList className="padding-2 word-break-all">
-    {results?.results?.map((result, idx) => (
-      <IconListItem key={idx} className="usa-icon-list__item">
-        {result.value && (
-          <>
-            {createBlurrinessIncidatorIcon(result.value.isBlurry)}
-            <IconListContent>
-              {" "}
-              {formatImagePath(result.value.imagePath)}
-              {createBlurrinessIncidatorText(result.value.isBlurry)}
-            </IconListContent>
-          </>
-        )}
-        {result.reason && (
-          <>
-            {createBlurrinessIncidatorIcon(result.reason.isBlurry)}
-            <IconListContent>
-              {" "}
-              {formatImagePath(result.reason.imagePath)}
-              {createBlurrinessIncidatorText(result.reason.isBlurry)}
-            </IconListContent>
-          </>
-        )}
-      </IconListItem>
-    ))}
-  </IconList>
-</div>);
-}
+    <div>
+      <IconList className="padding-2 word-break-all">
+        {results?.results?.map((result, idx) => (
+          <IconListItem key={idx} className="usa-icon-list__item">
+            {result.value && (
+              <>
+                {createBlurrinessIncidatorIcon(result.value.isBlurry)}
+                <IconListContent>
+                  {" "}
+                  {formatImagePath(result.value.imagePath)}
+                  {createBlurrinessIncidatorText(result.value.isBlurry)}
+                </IconListContent>
+              </>
+            )}
+            {result.reason && (
+              <>
+                {createBlurrinessIncidatorIcon(result.reason.isBlurry)}
+                <IconListContent>
+                  {" "}
+                  {formatImagePath(result.reason.imagePath)}
+                  {createBlurrinessIncidatorText(result.reason.isBlurry)}
+                </IconListContent>
+              </>
+            )}
+          </IconListItem>
+        ))}
+      </IconList>
+    </div>
+  );
+};
 
 const Confirmation: NextPage = () => {
   const router = useRouter();
@@ -128,7 +132,7 @@ const Confirmation: NextPage = () => {
       </div>
     );
   };
-  
+
   return (
     <Layout>
       <div className="margin-top-5 measure-5">
@@ -141,7 +145,6 @@ const Confirmation: NextPage = () => {
           Thank you for uploading your documents. Here are the results:
         </p>
         {renderProcessingResults(results ? results.toString() : undefined)}
-
         <div className="padding-y-3">
           <h3>Await a decision on your claim</h3>
           <p>
