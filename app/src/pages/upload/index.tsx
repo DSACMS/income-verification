@@ -90,12 +90,16 @@ const Home = (props: { onSubmit?: () => void }) => {
         body.append(file.name, file);
       });
 
+      setDisableSubmit(true);
+
       fetch("/api/upload/", {
         method: "POST",
         body,
       })
         .then((response) => response.json())
         .then((results) => {
+          setDisableSubmit(false);
+
           router
             .push(
               {
