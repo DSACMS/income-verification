@@ -7,17 +7,25 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import Layout from "src/components/Layout";
 
-import type { ResponseData } from "../api/upload";
+import type {
+  BlurryDetectorResults,
+  OCRDectionResponse,
+  ResponseData,
+} from "../api/upload";
 
-function formatImagePath(path: string) {
+type ParsedBlurDecetorResults = ResponseData & {
+  results: BlurryDetectorResults;
+};
+
+const formatImagePath = (path: string) => {
   return (path.match("([^/]+$)") || [])[0];
-}
+};
 
-function createBlurrinessIncidatorText(isBlurry: boolean) {
+const createBlurrinessIncidatorText = (isBlurry: boolean) => {
   return isBlurry ? " is blurry." : " successfully uploaded.";
-}
+};
 
-function createBlurrinessIncidatorIcon(isBlurry: boolean) {
+const createBlurrinessIncidatorIcon = (isBlurry: boolean) => {
   return (
     <>
       <span className="usa-icon-list__icon">
@@ -38,16 +46,94 @@ function createBlurrinessIncidatorIcon(isBlurry: boolean) {
       </span>
     </>
   );
-}
+};
+
+const renderOcrResults = (results: OCRDectionResponse) => {
+  const elements = results.fulfilled.map((documentResults, index) => {
+    // get the orientation with the highest confidence
+    const highestConfidenceScore = Math.max(
+      ...documentResults.map((doc) => doc.confidence)
+    );
+    const highestConfidenceOrientation = documentResults.filter(
+      (doc) => doc.confidence === highestConfidenceScore
+    )[0];
+    const docFields = highestConfidenceOrientation.documents;
+
+    return (
+      <div key={`document-${index}`}>
+        <h3>Document {index + 1}</h3>
+        <p>
+          <strong>Confidence:</strong> {highestConfidenceOrientation.confidence}
+        </p>
+        <p>
+          <strong>Rotation:</strong>{" "}
+          {highestConfidenceOrientation.rotatedOrientation}
+        </p>
+        {JSON.stringify(docFields, null, 2)}
+      </div>
+    );
+  });
+
+  return <div>{elements}</div>;
+};
+
+const renderBlurDetectorResults = (
+  results: ParsedBlurDecetorResults["results"]
+) => {
+  return (
+    <div>
+      <IconList className="padding-2 word-break-all">
+        {results?.map((result, idx) => (
+          <IconListItem key={idx} className="usa-icon-list__item">
+            {result.value && (
+              <>
+                {createBlurrinessIncidatorIcon(result.value.isBlurry)}
+                <IconListContent>
+                  {" "}
+                  {formatImagePath(result.value.imagePath)}
+                  {createBlurrinessIncidatorText(result.value.isBlurry)}
+                </IconListContent>
+              </>
+            )}
+            {result.reason && (
+              <>
+                {createBlurrinessIncidatorIcon(result.reason.isBlurry)}
+                <IconListContent>
+                  {" "}
+                  {formatImagePath(result.reason.imagePath)}
+                  {createBlurrinessIncidatorText(result.reason.isBlurry)}
+                </IconListContent>
+              </>
+            )}
+          </IconListItem>
+        ))}
+      </IconList>
+    </div>
+  );
+};
 
 const Confirmation: NextPage = () => {
   const router = useRouter();
   const results = router.query?.results;
-  let parsedResults: ResponseData = { message: "" };
 
-  if (results) {
-    parsedResults = JSON.parse(results.toString() || "") as ResponseData;
-  }
+  const renderProcessingResults = (results?: string) => {
+    if (!results) {
+      return <>Could not render results</>;
+    }
+    const parsedResults = JSON.parse(results.toString()) as ResponseData;
+    return (
+      <div>
+        {parsedResults.engine === "blur" &&
+          renderBlurDetectorResults(
+            parsedResults.results as unknown as ParsedBlurDecetorResults["results"]
+          )}
+        {parsedResults.engine === "ocr" &&
+          renderOcrResults(
+            parsedResults.results as unknown as OCRDectionResponse
+          )}
+      </div>
+    );
+  };
 
   return (
     <Layout>
@@ -60,34 +146,7 @@ const Confirmation: NextPage = () => {
         <p className="usa-intro">
           Thank you for uploading your documents. Here are the results:
         </p>
-        <div>
-          <IconList className="padding-2 word-break-all">
-            {parsedResults?.results?.map((result, idx) => (
-              <IconListItem key={idx} className="usa-icon-list__item">
-                {result.value && (
-                  <>
-                    {createBlurrinessIncidatorIcon(result.value.isBlurry)}
-                    <IconListContent>
-                      {" "}
-                      {formatImagePath(result.value.imagePath)}
-                      {createBlurrinessIncidatorText(result.value.isBlurry)}
-                    </IconListContent>
-                  </>
-                )}
-                {result.reason && (
-                  <>
-                    {createBlurrinessIncidatorIcon(result.reason.isBlurry)}
-                    <IconListContent>
-                      {" "}
-                      {formatImagePath(result.reason.imagePath)}
-                      {createBlurrinessIncidatorText(result.reason.isBlurry)}
-                    </IconListContent>
-                  </>
-                )}
-              </IconListItem>
-            ))}
-          </IconList>
-        </div>
+        {renderProcessingResults(results ? results.toString() : undefined)}
         <div className="padding-y-3">
           <h3>Await a decision on your claim</h3>
           <p>

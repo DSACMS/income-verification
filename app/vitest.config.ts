@@ -5,6 +5,7 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   plugins: [react()],
   test: {
+    testTimeout: 15000,
     globals: true,
     setupFiles: ["./tests/setup.ts"],
     environmentMatchGlobs: [

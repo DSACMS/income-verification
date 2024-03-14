@@ -17,6 +17,7 @@ const nextConfig = {
   basePath,
   reactStrictMode: true,
   sassOptions: appSassOptions,
+  productionBrowserSourceMaps: true,
 };
 
 module.exports = nextConfig;

@@ -24,13 +24,11 @@ export type OcrOptions = {
 
 export type ProcessedImageResult = {
   documents: ReturnType<typeof parse>;
-  image: DocumentImage;
+  image?: DocumentImage;
   percentages: Record<ParserKeys, number>;
   confidence: number;
   rotatedOrientation?: DocumentOrientation;
 };
-
-export type ProcessedRotatedImagesResult = ProcessedImageResult[];
 
 export type TextFromImagePathResult = {
   text: string;
@@ -48,7 +46,7 @@ export const logger = createLogger("ocr-parser", {
 // a function that rotates an image and processes it for each orientation
 const processDocument = async (
   document: DocumentImage
-): Promise<ProcessedRotatedImagesResult> => {
+): Promise<ProcessedImageResult[]> => {
   const processImage = async (
     orientation: DocumentOrientation
   ): Promise<ProcessedImageResult> => {
