@@ -3,6 +3,7 @@ import { DocumentImage, type DocumentOrientation } from "@/utils/document";
 import path from "path";
 import pino, { DestinationStream, LoggerOptions } from "pino";
 import sharp from "sharp";
+import 'pino-pretty';
 
 export const createLogger = (
   name: string,
