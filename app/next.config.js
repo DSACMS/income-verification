@@ -18,6 +18,7 @@ const nextConfig = {
   reactStrictMode: true,
   sassOptions: appSassOptions,
   productionBrowserSourceMaps: true,
+  serverComponentsExternalPackages: ['tesseract.js']
 };
 
 module.exports = nextConfig;
