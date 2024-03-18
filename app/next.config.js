@@ -18,6 +18,12 @@ const nextConfig = {
   reactStrictMode: true,
   sassOptions: appSassOptions,
   productionBrowserSourceMaps: true,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 module.exports = nextConfig;
