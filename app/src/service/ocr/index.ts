@@ -25,6 +25,7 @@ export type OcrOptions = {
 export type ProcessedImageResult = {
   documents: ReturnType<typeof parse>;
   image?: DocumentImage;
+  fileName: string;
   percentages: Record<ParserKeys, number>;
   confidence: number;
   rotatedOrientation?: DocumentOrientation;
@@ -98,6 +99,7 @@ const process = async (
 
   const result = {
     image: document,
+    fileName: document.fileName,
     documents: docs,
     percentages,
     confidence,
