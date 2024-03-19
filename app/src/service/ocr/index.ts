@@ -99,6 +99,7 @@ const process = async (
 
   const result = {
     image: document,
+    fileName: document.fileName,
     documents: docs,
     percentages,
     confidence,

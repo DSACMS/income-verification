@@ -116,8 +116,10 @@ const ocrDetectionAction = async (
   const fulfilled = fulfilledFiles.map((result) => {
     // don't send the image data to the client, but keep the filename
     result.value.data.map((doc) => {
-      const fileName = doc.image.fileName;
-      doc.fileName = fileName;
+      if (doc.image) {
+        const fileName = doc.image.fileName;
+        doc.fileName = fileName;
+      }
       delete doc.image;
       return doc;
     });

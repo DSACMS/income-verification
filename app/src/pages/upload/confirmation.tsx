@@ -33,7 +33,6 @@ const createLegibileIncidatorText = (isBlurry: boolean) => {
   return isBlurry ? " may be too blurry to read." : " successfully uploaded.";
 };
 
-
 const createBlurrinessIncidatorIcon = (isBlurry: boolean) => {
   return (
     <>
@@ -60,22 +59,31 @@ const createBlurrinessIncidatorIcon = (isBlurry: boolean) => {
 const renderDocumentFields = (docFields: ParsingFunctionResult) => {
   // ignore the top-level keys, just show an alert if there is any
   // data in the second level
-  const recognizedData = Object.entries(docFields).map(([_docType, fields]) => {
-    return Object.entries(fields).filter(([_, v]) => v != "");
-  }).flat();
+  const recognizedData = Object.entries(docFields)
+    .map(([, fields]) => {
+      return Object.entries(fields).filter(([, v]) => v !== "");
+    })
+    .flat();
 
   if (recognizedData.length > 0) {
     return (
       <Alert
-	type="success"
-	heading="We recognized text in your document!"
-	headingLevel="h4"
+        type="success"
+        heading="We recognized text in your document!"
+        headingLevel="h4"
       >
-	<strong>For demo purposes:</strong>{' '}
-	<span>We were able to recognize the following fields, which we could send to the caseworker:</span>
-	<ul>
-	  {recognizedData.map(([field, value], i) => <li key={i}><strong>{field}</strong>: {value}</li>)}
-	</ul>
+        <strong>For demo purposes:</strong>{" "}
+        <span>
+          We were able to recognize the following fields, which we could send to
+          the caseworker:
+        </span>
+        <ul>
+          {recognizedData.map(([field, value], i) => (
+            <li key={i}>
+              <strong>{field}</strong>: {value}
+            </li>
+          ))}
+        </ul>
       </Alert>
     );
   }
@@ -91,22 +99,23 @@ const renderOcrResults = (results: OCRDectionResponse) => {
       (doc) => doc.confidence === highestConfidenceScore
     )[0];
     const docFields = highestConfidenceOrientation.documents;
-    const isIllegible = highestConfidenceOrientation.confidence < BLURRINESS_THRESHOLD;
+    const isIllegible =
+      highestConfidenceOrientation.confidence < BLURRINESS_THRESHOLD;
 
     return (
       <div key={`document-${index}`}>
-	<IconListItem key={index} className="usa-icon-list__item">
-	  <>
-	    {createBlurrinessIncidatorIcon(isIllegible)}
-	    <IconListContent>
-	      {" "}
-	      {formatImagePath(highestConfidenceOrientation.fileName)}
-	      {createLegibileIncidatorText(isIllegible)}
-	      {` (confidence: ${highestConfidenceScore})`}
-	    </IconListContent>
-	  </>
-	</IconListItem>
-	{renderDocumentFields(docFields)}
+        <IconListItem key={index} className="usa-icon-list__item">
+          <>
+            {createBlurrinessIncidatorIcon(isIllegible)}
+            <IconListContent>
+              {" "}
+              {formatImagePath(highestConfidenceOrientation.fileName)}
+              {createLegibileIncidatorText(isIllegible)}
+              {` (confidence: ${highestConfidenceScore})`}
+            </IconListContent>
+          </>
+        </IconListItem>
+        {renderDocumentFields(docFields)}
       </div>
     );
   });

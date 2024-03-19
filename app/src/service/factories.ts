@@ -2,8 +2,8 @@ import { DocumentMatcher } from "@/service/ocr";
 import { DocumentImage, type DocumentOrientation } from "@/utils/document";
 import path from "path";
 import pino, { DestinationStream, LoggerOptions } from "pino";
+import "pino-pretty";
 import sharp from "sharp";
-import 'pino-pretty';
 
 export const createLogger = (
   name: string,
