@@ -19,9 +19,9 @@
     "ts:check": "tsc --noEmit"
   },
   "dependencies": {
-    "@trussworks/react-uswds": "^5.0.0",
+    "@trussworks/react-uswds": "^8.0.0",
     "@types/node": "^20.11.24",
-    "@uswds/uswds": "3.1.0",
+    "@uswds/uswds": "^3.7.1",
     "formidable": "^3.5.1",
     "i18next": "^23.10.1",
     "next": "^13.5.6",
