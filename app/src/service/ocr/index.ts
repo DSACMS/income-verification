@@ -25,6 +25,7 @@ export type OcrOptions = {
 export type ProcessedImageResult = {
   documents: ReturnType<typeof parse>;
   image?: DocumentImage;
+  fileName: string;
   percentages: Record<ParserKeys, number>;
   confidence: number;
   rotatedOrientation?: DocumentOrientation;
