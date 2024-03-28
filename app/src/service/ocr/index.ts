@@ -48,6 +48,7 @@ export const logger = createLogger("ocr-parser", {
 const processDocument = async (
   document: DocumentImage
 ): Promise<ProcessedImageResult[]> => {
+  
   const processImage = async (
     orientation: DocumentOrientation
   ): Promise<ProcessedImageResult> => {

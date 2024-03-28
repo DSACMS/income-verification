@@ -7,8 +7,8 @@ RUN apk -U upgrade
 
 
 # setup user stuff
-ARG RUN_UID
-ARG RUN_USER
+ARG RUN_UID=${UID:-4000}
+ARG RUN_USER=${USER:-'nodummy'}
 
 # The following logic creates the RUN_USER home directory and the directory where
 # we will be storing the application in the image. This runs when the user is not root

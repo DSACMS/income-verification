@@ -15,7 +15,7 @@ const appSassOptions = sassOptions(basePath);
 const nextConfig = {
   trailingSlash: true,
   basePath,
-  reactStrictMode: true,
+  reactStrictMode: false,
   sassOptions: appSassOptions,
   productionBrowserSourceMaps: true,
   typescript: {
