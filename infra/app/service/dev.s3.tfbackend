@@ -1,0 +1,4 @@
+bucket         = "doc-uploader"
+key            = "terraform/state/dev/doc-uploader.tfstate"
+dynamodb_table = "doc-uploader-locks"
+region         = "us-east-1"
