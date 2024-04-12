@@ -9,4 +9,8 @@ module "dev_config" {
   enable_https                    = false
   has_database                    = local.has_database
   has_incident_management_service = local.has_incident_management_service
+  service_override_extra_environment_variables = {
+    "APP_ENV" = "dev",
+    "PORT" = "8000"
+  }
 }

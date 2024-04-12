@@ -4,6 +4,7 @@ import path from "path";
 import pino, { DestinationStream, LoggerOptions } from "pino";
 import "pino-pretty";
 import sharp from "sharp";
+import { createWorker } from "tesseract.js";
 
 export const createLogger = (
   name: string,
@@ -48,3 +49,16 @@ export const createDocumentImage = async (
     metaData,
   };
 };
+
+export const createOcrScanner = async (
+  logger: pino.Logger,
+  trainingDataPath: string
+): Promise<Tesseract.Worker> => {
+  const worker = await createWorker("eng", 1, {
+    cachePath: trainingDataPath,
+    logger: (message) => logger.debug(message),
+  });
+
+  return worker;
+};
+

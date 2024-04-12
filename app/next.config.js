@@ -13,6 +13,7 @@ const appSassOptions = sassOptions(basePath);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   trailingSlash: true,
   basePath,
   reactStrictMode: false,
@@ -25,11 +26,11 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   experimental: {
+    serverComponentsExternalPackages: ["tesseract.js"],
     outputFileTracingIncludes: {
       '/api/*': ['./node_modules/**/*.wasm', './node_modules/**/*.proto'],
     },
   },
-  serverComponentsExternalPackages: ["tesseract.js"],
 };
 
 module.exports = nextConfig;

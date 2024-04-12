@@ -33,3 +33,17 @@ release-build:
 		--build-arg RUN_UID=$(RUN_UID) \
 		$(OPTS) \
 		.
+
+##################################################
+# Local development
+##################################################
+dev: # Run the Next.js local dev server in Docker
+	docker compose up --detach nextjs
+	docker compose logs --follow nextjs
+
+storybook: # Run the Storybook local dev server in Docker
+	docker compose up --detach storybook
+	docker compose logs --follow storybook
+
+stop:
+	docker compose down
