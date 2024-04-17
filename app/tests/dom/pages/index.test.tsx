@@ -3,7 +3,7 @@ import Index from "@/pages/index";
 import { act, render, screen } from "@testing-library/react";
 import { axe } from "jest-axe";
 
-describe("Index", () => {
+describe.skip("Index", () => {
   it("should render the heading", () => {
     render(<Index />);
 

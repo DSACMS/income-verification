@@ -36,6 +36,7 @@ export type ResponseData = {
 };
 
 export const config = {
+  maxDuration: 60,
   api: {
     bodyParser: false,
   },

@@ -1,12 +1,14 @@
-import { createLogger } from "@/service/factories";
+import { createLogger, createOcrScanner } from "@/service/factories";
 import { type ParserKeys, parse, parsers } from "@/service/ocr/parser";
 import {
   DocumentImage,
   DocumentOrientation,
   getTextFromDocumentImage,
-  orientations,
   rotateDocumentImage,
 } from "@/utils/document";
+import fs from "fs";
+import path from "path";
+import Tesseract from "tesseract.js";
 
 export type DocumentMatcher<
   K extends ParserKeys,
@@ -45,36 +47,54 @@ export const logger = createLogger("ocr-parser", {
 });
 
 // a function that rotates an image and processes it for each orientation
-const processDocument = async (
+export const processDocument = async (
   document: DocumentImage
 ): Promise<ProcessedImageResult[]> => {
-  const processImage = async (
-    orientation: DocumentOrientation
-  ): Promise<ProcessedImageResult> => {
-    const rotatedDocumentImage = await rotateDocumentImage(
-      document,
-      orientation
-    );
-    const result = await process(rotatedDocumentImage);
-    result.rotatedOrientation = orientation;
+  // get the current working directory
+  const trainingDataDir = path.join(process.cwd(), "assets");
+  console.log("trainingDataDir", trainingDataDir);
 
-    return result;
-  };
+  // log all of the file names in the training data directory
+  fs.readdirSync(trainingDataDir).forEach((file) => {
+    logger.info(`Training data file: ${file}`);
+  });
 
+  const ocrScanner = await createOcrScanner(logger, trainingDataDir);
+  const scanned = await scan(ocrScanner, document);
+
+  return [scanned];
   // Map each orientation to a processing function that returns a promise.
-  const promises = orientations.map((orientation) => processImage(orientation));
-  const rotated = await Promise.all(promises);
-
-  return rotated;
+  // const promises = orientations.map((orientation) => rotateAndScan(ocrScanner, document, orientation));
+  // const rotated = await Promise.all(promises);
+  // await ocrScanner.terminate();
+  // return rotated;
 };
 
-const process = async (
+/**
+ * Process a single orientation
+ * @param worker Tesseract.Worker
+ * @param orientation DocumentOrientation
+ * @returns ProcessedImageResult
+ */
+export const rotateAndScan = async (
+  worker: Tesseract.Worker,
+  document: DocumentImage,
+  orientation: DocumentOrientation
+): Promise<ProcessedImageResult> => {
+  // rotate image to the target orientation
+  const rotatedDocumentImage = await rotateDocumentImage(document, orientation);
+
+  const result = await scan(worker, rotatedDocumentImage);
+  result.rotatedOrientation = orientation;
+
+  return result;
+};
+
+export const scan = async (
+  worker: Tesseract.Worker,
   document: DocumentImage
 ): Promise<ProcessedImageResult> => {
-  const { text, confidence } = await getTextFromDocumentImage(document, {
-    debug: true,
-    logger,
-  });
+  const { text, confidence } = await getTextFromDocumentImage(worker, document);
   const parsersArray = Object.values(parsers);
   const docs = parse(text, parsersArray, logger);
 
@@ -109,7 +129,8 @@ const process = async (
 };
 
 const ocrService = {
-  process,
+  scan,
+  rotateAndScan,
   processDocument,
   logger,
 };
