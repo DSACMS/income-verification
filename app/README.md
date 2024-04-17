@@ -123,8 +123,3 @@ It's recommended that developers configure their code editor to auto run these t
    ```
 
 </details>
-
-## Other topics
-
-- [Internationalization](../docs/internationalization.md)
-- Refer to the [architecture decision records](../docs/decisions) for more context on technical decisions.
