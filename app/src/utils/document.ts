@@ -39,7 +39,7 @@ export const rotateDocumentImage = async (
 
 export const getTextFromDocumentImage = async (
   worker: Tesseract.Worker,
-  document: DocumentImage,
+  document: DocumentImage
 ) => {
   const result = await worker.recognize(document.data);
   const output = {

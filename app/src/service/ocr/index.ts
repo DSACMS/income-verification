@@ -1,7 +1,4 @@
-import path from "path";
-import fs from "fs";
-import Tesseract from "tesseract.js";
-import { createOcrScanner, createLogger } from "@/service/factories";
+import { createLogger, createOcrScanner } from "@/service/factories";
 import { type ParserKeys, parse, parsers } from "@/service/ocr/parser";
 import {
   DocumentImage,
@@ -9,6 +6,9 @@ import {
   getTextFromDocumentImage,
   rotateDocumentImage,
 } from "@/utils/document";
+import fs from "fs";
+import path from "path";
+import Tesseract from "tesseract.js";
 
 export type DocumentMatcher<
   K extends ParserKeys,
@@ -50,22 +50,18 @@ export const logger = createLogger("ocr-parser", {
 export const processDocument = async (
   document: DocumentImage
 ): Promise<ProcessedImageResult[]> => {
+  // get the current working directory
+  const trainingDataDir = path.join(process.cwd(), "assets");
+  console.log("trainingDataDir", trainingDataDir);
 
-  const currentWorkingDir =path.resolve();
+  // log all of the file names in the training data directory
+  fs.readdirSync(trainingDataDir).forEach((file) => {
+    logger.info(`Training data file: ${file}`);
+  });
 
-  const trainingDataPath = path.join(
-    currentWorkingDir,
-    "assets",
-  );
-
-  if(!fs.existsSync(trainingDataPath)) {
-    logger.info("Training data not found!")
-    return []
-  }
-
-  const ocrScanner = await createOcrScanner(logger, trainingDataPath)
+  const ocrScanner = await createOcrScanner(logger, trainingDataDir);
   const scanned = await scan(ocrScanner, document);
-  
+
   return [scanned];
   // Map each orientation to a processing function that returns a promise.
   // const promises = orientations.map((orientation) => rotateAndScan(ocrScanner, document, orientation));
@@ -86,10 +82,7 @@ export const rotateAndScan = async (
   orientation: DocumentOrientation
 ): Promise<ProcessedImageResult> => {
   // rotate image to the target orientation
-  const rotatedDocumentImage = await rotateDocumentImage(
-    document,
-    orientation
-  );
+  const rotatedDocumentImage = await rotateDocumentImage(document, orientation);
 
   const result = await scan(worker, rotatedDocumentImage);
   result.rotatedOrientation = orientation;

@@ -61,4 +61,3 @@ export const createOcrScanner = async (
 
   return worker;
 };
-
