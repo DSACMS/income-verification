@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@storybook/addon-links": "^6.0.0",
-    "@trussworks/react-uswds": "^5.0.0",
+    "@trussworks/react-uswds": "^5.5.0",
     "@types/node": "^20.11.24",
     "@uswds/uswds": "3.1.0",
     "formidable": "^3.5.1",
