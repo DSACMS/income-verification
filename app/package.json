@@ -25,7 +25,7 @@
     "@uswds/uswds": "3.1.0",
     "formidable": "^3.5.1",
     "i18next": "^22.4.12",
-    "next": "^12.1.2",
+    "next": "^14.2.15",
     "next-i18next": "^13.2.2",
     "pino": "^8.19.0",
     "pino-pretty": "^10.3.1",
