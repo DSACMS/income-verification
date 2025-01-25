@@ -19,7 +19,7 @@
     "ts:check": "tsc --noEmit"
   },
   "dependencies": {
-    "@storybook/addon-links": "^6.0.0",
+    "@storybook/addon-links": "^7.0.0",
     "@trussworks/react-uswds": "^5.0.0",
     "@types/node": "^20.11.24",
     "@uswds/uswds": "3.1.0",
